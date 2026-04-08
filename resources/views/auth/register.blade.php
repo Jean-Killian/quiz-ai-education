@@ -1,47 +1,43 @@
 <x-guest-layout>
-    <div class="card max-w-[370px] w-full">
-        <form method="POST" class="card-body flex flex-col gap-5 p-10" action="{{ route('register') }}">
-            @csrf
+    <form method="POST" action="{{ route('register') }}" class="space-y-6">
+        @csrf
 
-            <div class="text-center mb-2.5">
-                <h3 class="text-lg font-medium text-gray-900 leading-none mb-2.5">Sign up</h3>
-                <div class="flex items-center justify-center">
-                    <span class="text-2sm text-gray-700 me-1.5">Already have an Account ?</span>
-                    <a class="text-2sm link" href="{{ route('login') }}">
-                        Sign In
-                    </a>
-                </div>
-            </div>
+        <div class="text-center mb-6">
+            <h3 class="text-2xl font-bold text-gray-900">Inscription</h3>
+        </div>
 
-            <!-- Last Name -->
-            <x-forms.input label="{{ __('Last Name') }}" name="last_name"
-                           :value="old('last_name')" type="text" placeholder="Doe"
-                           :messages="$errors->get('last_name')"/>
+        <div>
+            <label for="name" class="block text-sm font-medium text-gray-700">Nom</label>
+            <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm py-2 px-3 border border-gray-300 text-gray-700">
+            @error('name')<span class="text-red-600 text-sm mt-1">{{ $message }}</span>@enderror
+        </div>
 
-            <!-- First Name -->
-            <x-forms.input label="{{ __('First Name') }}" name="first_name"
-                           :value="old('first_name')" type="text" placeholder="John"
-                           :messages="$errors->get('first_name')"/>
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Adresse Email</label>
+            <input id="email" type="email" name="email" value="{{ old('email') }}" required
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm py-2 px-3 border border-gray-300 text-gray-700">
+            @error('email')<span class="text-red-600 text-sm mt-1">{{ $message }}</span>@enderror
+        </div>
 
-            <!-- Email Address -->
-            <x-forms.input label="{{ __('Email') }}" name="email"
-                           :value="old('email')" type="email" :placeholder="__('email@email.com')"
-                           :messages="$errors->get('email')"/>
+        <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+            <input id="password" type="password" name="password" required
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm py-2 px-3 border border-gray-300 text-gray-700">
+            @error('password')<span class="text-red-600 text-sm mt-1">{{ $message }}</span>@enderror
+        </div>
 
-            <!-- Password -->
-            <x-forms.input label="{{ __('Password') }}" name="password"
-                           :value="old('email')" type="password" :placeholder="__('Enter Password')"
-                           :messages="$errors->get('password')"/>
+        <div>
+            <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirmer le mot de passe</label>
+            <input id="password_confirmation" type="password" name="password_confirmation" required
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm py-2 px-3 border border-gray-300 text-gray-700">
+        </div>
 
-            <!-- Confirm Password -->
-            <x-forms.input label="{{ __('Password') }}" name="password_confirmation"
-                           :value="old('email')" type="password" :placeholder="__('Re-enter Password')"
-                           :messages="$errors->get('password')"/>
-
-
-            <x-forms.primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-forms.primary-button>
-        </form>
-    </div>
+        <div class="flex items-center justify-between mt-6">
+            <a href="{{ route('login') }}" class="text-sm text-gray-600 hover:text-gray-900 underline">Déjà inscrit ?</a>
+            <button type="submit" class="flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700">
+                S'inscrire
+            </button>
+        </div>
+    </form>
 </x-guest-layout>

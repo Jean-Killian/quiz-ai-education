@@ -1,37 +1,36 @@
 <x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <form method="POST" action="{{ route('login') }}" class="space-y-6">
+        @csrf
 
-    <div class="card max-w-[370px] w-full">
-        <form method="POST" class="card-body flex flex-col gap-5 p-10" action="{{ route('login') }}">
-            @csrf
+        <div class="text-center mb-6">
+            <h3 class="text-2xl font-bold text-gray-900">Connexion</h3>
+            <p class="text-sm text-gray-500 mt-1">Veuillez vous authentifier pour générer vos quiz.</p>
+        </div>
 
-            <div class="text-center mb-2.5">
-                <h3 class="text-lg font-medium text-gray-900 leading-none mb-2.5">Sign in</h3>
-                <div class="flex items-center justify-center font-medium">
-                    <span class="text-2sm text-gray-700 me-1.5">Need an account?</span>
-                    <a class="text-2sm link" href="{{ route('register') }}">Sign up</a>
-                </div>
-            </div>
+        <!-- Email Address -->
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Adresse Email</label>
+            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border">
+            @error('email')
+                <span class="text-red-600 text-sm mt-1">{{ $message }}</span>
+            @enderror
+        </div>
 
-            <!-- Email Address -->
-            <x-forms.input label="{{ __('Email') }}" name="email"
-                           :value="old('email')" type="email" :placeholder="__('email@email.com')"
-                           :messages="$errors->get('email')"/>
+        <!-- Password -->
+        <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+            <input id="password" type="password" name="password" required
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border">
+            @error('password')
+                <span class="text-red-600 text-sm mt-1">{{ $message }}</span>
+            @enderror
+        </div>
 
-            <!-- Password -->
-            <x-forms.input label="{{ __('Password') }}" name="password" :placeholder="__('Enter Password')"
-                           :value="old('email')" type="password" :resetLink="true"
-                           :messages="$errors->get('password')"/>
-
-            <!-- Remember Me -->
-            <x-forms.checkbox :label="__('Remember Me')" name="remember" />
-
-
-            <x-forms.primary-button>
-                {{ __('Log in') }}
-            </x-forms.primary-button>
-
-        </form>
-    </div>
+        <div class="flex items-center justify-end mt-6">
+            <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition">
+                Se connecter
+            </button>
+        </div>
+    </form>
 </x-guest-layout>

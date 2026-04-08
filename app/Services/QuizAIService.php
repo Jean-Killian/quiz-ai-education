@@ -10,45 +10,39 @@ class QuizAIService
 {
     protected Client $client;
     protected string $apiKey;
-    protected string $baseUrl = 'https://api.mistral.ai/v1/chat/completions';
+    protected string $baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
 
     public function __construct()
     {
         $this->client = new Client();
-        $this->apiKey = env('MISTRAL_API_KEY');
+        // Support de l'ancien nom de variable au cas où
+        $this->apiKey = env('GEMINI_API_KEY', env('MISTRAL_API_KEY', ''));
+        
+        if (empty($this->apiKey)) {
+            throw new \InvalidArgumentException("La clé GEMINI_API_KEY est introuvable ou vide dans le fichier .env !");
+        }
     }
 
     /**
-     * Sends a quiz generation request to the Mistral API.
-     *
-     * - Validates input messages
-     * - Builds the request payload
-     * - Sends POST request and handles errors
-     *
-     * @param array $data User messages to send to the AI
-     * @return array Parsed JSON response from the API
+     * Envoie la requête à l'API Gemini.
      */
-    public function generateQuestionnaire(array $data): array
+    public function generateQuestionnaire(string $prompt): array
     {
-        if (empty($data['messages']) || !is_array($data['messages'])) {
-            throw new \InvalidArgumentException("Missing or invalid 'messages' array.");
-        }
-
-        $body = $this->buildRequestBody($data['messages']);
+        $body = $this->buildRequestBody($prompt);
+        $url = $this->baseUrl . '?key=' . $this->apiKey;
 
         try {
-            Log::info('Sending request to Mistral API', ['body' => $body]);
+            Log::info('Sending request to Gemini API');
 
-            $response = $this->client->post($this->baseUrl, [
+            $response = $this->client->post($url, [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . $this->apiKey,
                     'Content-Type' => 'application/json',
                 ],
                 'json' => $body,
             ]);
 
             $content = $response->getBody()->getContents();
-            Log::info('Mistral API response', ['content' => $content]);
+            Log::info('Gemini API response received successfully');
 
             return json_decode($content, true);
 
@@ -57,28 +51,28 @@ class QuizAIService
                 ? $e->getResponse()->getBody()->getContents()
                 : $e->getMessage();
 
-            Log::error('Mistral API error', ['error' => $message]);
-            throw new \Exception("Mistral API request failed: " . $message);
+            Log::error('Gemini API error', ['error' => $message]);
+            throw new \Exception("Gemini API request failed: " . $message);
         }
     }
 
     /**
-     * Builds the API request body.
-     *
-     * @param array $messages User messages for the prompt
-     * @return array Formatted request payload
+     * Prépare le payload spécifique à Gemini.
      */
-    protected function buildRequestBody(array $messages): array
+    protected function buildRequestBody(string $prompt): array
     {
         return [
-            'model' => 'mistral-small',
-            'temperature' => 0.7,
-            'max_tokens' => 2048,
-            'stream' => false,
-            'messages' => $messages,
+            'contents' => [
+                [
+                    'parts' => [
+                        ['text' => $prompt]
+                    ]
+                ]
+            ],
+            'generationConfig' => [
+                'temperature' => 0.4,
+                'responseMimeType' => 'application/json',
+            ]
         ];
     }
 }
-
-
-
