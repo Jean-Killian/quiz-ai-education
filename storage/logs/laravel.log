@@ -2497,3 +2497,35 @@ Format strict attendu:
 "} 
 [2026-04-08 11:31:02] local.INFO: Sending request to Gemini API  
 [2026-04-08 11:31:09] local.INFO: Gemini API response received successfully  
+[2026-04-08 11:38:16] local.INFO: Sending request to Gemini API  
+[2026-04-08 11:38:22] local.INFO: Gemini API response received successfully  
+[2026-04-08 11:40:09] local.INFO: Sending request to Gemini API  
+[2026-04-08 11:40:21] local.INFO: Gemini API response received successfully  
+[2026-04-08 11:43:22] local.INFO: Sending request to Gemini API  
+[2026-04-08 11:43:41] local.INFO: Gemini API response received successfully  
+[2026-04-08 11:45:34] local.INFO: Sending request to Gemini API  
+[2026-04-08 11:45:59] local.INFO: Gemini API response received successfully  
+[2026-04-08 11:47:47] local.INFO: Sending request to Gemini API  
+[2026-04-08 11:47:53] local.ERROR: Gemini API error {"error":"{
+  \"error\": {
+    \"code\": 503,
+    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",
+    \"status\": \"UNAVAILABLE\"
+  }
+}
+"} 
+[2026-04-08 11:48:08] local.INFO: Sending request to Gemini API  
+[2026-04-08 11:48:15] local.INFO: Gemini API response received successfully  
+[2026-04-08 11:51:12] local.INFO: Sending request to Gemini API  
+[2026-04-08 11:51:38] local.INFO: Gemini API response received successfully  
+[2026-04-08 11:57:25] local.INFO: Sending request to Gemini API  
+[2026-04-08 11:58:26] local.ERROR: Gemini API error {"error":"{
+  \"error\": {
+    \"code\": 503,
+    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",
+    \"status\": \"UNAVAILABLE\"
+  }
+}
+"} 
+[2026-04-08 11:58:45] local.INFO: Sending request to Gemini API  
+[2026-04-08 11:58:52] local.INFO: Gemini API response received successfully  
