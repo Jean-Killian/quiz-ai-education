@@ -55,6 +55,20 @@ Chaque décision suit la structure de référence MADR (Markdown Architecture De
 - **Choix Retenu :** **Option 2 (API REST JSON stricte).**
 - **Compromis accepté :** Demande un effort supplémentaire côté frontend (ex: Fetch JS) pour traiter la donnée asynchrone, mais garantit que l'architecture soit 100% propre, moderne, et réutilisable immédiatement si l'on veut brancher une app Mobile Flutter / React Native ou un SPA demain. C'est un gage de professionnalisme.
 
+### [ADR-005] Produit : Pivot vers "BugHunter AI" (Hacker Theme)
+- **Date :** 9 Avril 2026
+- **Catégorie :** Produit / UX
+- **Contexte :** Le quiz "générique" manquait de valeur ajoutée pour une école de développeurs.
+- **Choix Retenu :** Gamification en mode "Hacker/Cybersecurity". Transformation des questions en blocs de code buggés.
+- **Compromis :** Demande un effort de prompt engineering plus complexe pour l'IA pour garantir du code syntaxiquement correct mais logiquement faux.
+
+### [ADR-006] Performance : Migration de Gemini vers Groq (Llama 3)
+- **Date :** 9 Avril 2026
+- **Catégorie :** Backend / Infrastructure IA
+- **Contexte :** Latences importantes et timeouts avec l'API Gemini lors de la génération de code complexe.
+- **Choix Retenu :** Passage sur l'API **Groq Cloud** avec le modèle **Llama-3.3-70b-versatile**.
+- **Conséquences :** Vitesse de génération divisée par 10 (~1s vs 15s). Dépendance à une nouvelle clé d'API.
+
 ---
 
 > [!IMPORTANT]
