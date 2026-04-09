@@ -50,6 +50,12 @@
                             <a href="{{ route('leaderboard') }}" class="text-[10px] uppercase tracking-widest font-bold {{ request()->routeIs('leaderboard') ? 'text-green-500' : 'text-slate-500 hover:text-slate-300' }}">Classement_Elite</a>
                         </div>
 
+                        <!-- Mute Toggle -->
+                        <button id="muteToggle" class="text-slate-500 hover:text-green-400 transition-colors p-1 rounded border border-slate-800 bg-slate-900/50" title="Activer/Désactiver les SFX">
+                            <svg id="iconVolumeOn" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                            <svg id="iconVolumeOff" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" opacity=".5"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>
+                        </button>
+
                         <!-- Global Score -->
                         <div class="flex items-center gap-3 bg-green-950/30 border border-green-500/50 px-3 py-1.5 rounded shadow-[0_0_15px_rgba(34,197,94,0.1)]">
                             <span class="text-green-600 text-[9px] font-black uppercase tracking-tighter">Reputation</span>
@@ -91,5 +97,66 @@
             </p>
         </footer>
     </div>
+
+    <!-- SFX Engine -->
+    <script>
+        const SFX = {
+            click: new Audio('https://www.soundjay.com/buttons/button-16.mp3'),
+            success: new Audio('https://www.soundjay.com/buttons/button-3.mp3'),
+            error: new Audio('https://www.soundjay.com/buttons/button-10.mp3')
+        };
+
+        // Configuration du volume
+        Object.values(SFX).forEach(audio => {
+            audio.volume = 0.2;
+        });
+
+        const muteToggle = document.getElementById('muteToggle');
+        const iconOn = document.getElementById('iconVolumeOn');
+        const iconOff = document.getElementById('iconVolumeOff');
+
+        let isMuted = localStorage.getItem('hg_muted') === 'true';
+
+        function updateUI() {
+            if (isMuted) {
+                iconOn.classList.add('hidden');
+                iconOff.classList.remove('hidden');
+            } else {
+                iconOn.classList.remove('hidden');
+                iconOff.classList.add('hidden');
+            }
+        }
+
+        function playSound(sound) {
+            if (isMuted) return;
+            const audio = SFX[sound];
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log('Audio play blocked'));
+            }
+        }
+
+        muteToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isMuted = !isMuted;
+            localStorage.setItem('hg_muted', isMuted);
+            updateUI();
+            if (!isMuted) playSound('click');
+        });
+
+        // Global Click Listener for buttons and links
+        document.addEventListener('click', (e) => {
+            const target = e.target.closest('button, a');
+            if (target && target.id !== 'muteToggle') {
+                playSound('click');
+            }
+        });
+
+        // Initialize UI
+        updateUI();
+
+        // Exporter pour un usage spécifique (ex: résultats quiz)
+        window.BugHunterAudio = { play: playSound };
+    </script>
 </body>
 </html>

@@ -97,4 +97,17 @@
 
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.BugHunterAudio) {
+                const score = {{ $score }};
+                if (score > 0) {
+                    window.BugHunterAudio.play('success');
+                } else {
+                    window.BugHunterAudio.play('error');
+                }
+            }
+        });
+    </script>
 </x-app-layout>
