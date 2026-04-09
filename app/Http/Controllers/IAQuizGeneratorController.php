@@ -43,6 +43,7 @@ class IAQuizGeneratorController extends Controller
         $quiz = Quiz::create([
             'title' => 'Code Review [' . $data['difficulty'] . '] : ' . ucfirst($data['subject']),
             'description' => "Mission de débogage contenant " . count($qcm) . " failles ou erreurs générées par IA.",
+            'difficulty' => $data['difficulty'],
         ]);
 
         foreach ($qcm as $q) {

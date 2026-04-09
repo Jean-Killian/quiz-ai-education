@@ -44,13 +44,35 @@ class QuizController extends Controller
         }
 
         // Sauvegarder le score pour l'utilisateur
-        // 'false' indique qu'on ne détache pas les autres quiz (équivalent syncWithoutDetaching avec mise à jour du score)
         Auth::user()->quizzes()->sync([
             $quiz->id => ['score' => $score]
         ], false);
 
-        // On passe les réponses de l'utilisateur à la session pour afficher la correction au prochain écran
-        return redirect()->route('quizzes.result', $quiz->id)->with('user_answers', $submittedAnswers);
+        // --- CALCUL DU SCORE GLOBAL (Points d'XP) ---
+        $pointsPerBug = match($quiz->difficulty) {
+            'Junior' => 10,
+            'Medior' => 25,
+            'Senior' => 50,
+            default  => 10
+        };
+
+        $totalQuestions = $quiz->questions()->count();
+        $gainedPoints = $score * $pointsPerBug;
+
+        // Bonus Perfect (100% correct)
+        if ($score === $totalQuestions && $totalQuestions > 0) {
+            $gainedPoints = floor($gainedPoints * 1.2);
+        }
+
+        // Mise à jour du score global de l'utilisateur
+        $user = Auth::user();
+        $user->global_score += $gainedPoints;
+        $user->save();
+
+        // On passe les réponses et le gain de points à la session
+        return redirect()->route('quizzes.result', $quiz->id)
+            ->with('user_answers', $submittedAnswers)
+            ->with('gained_points', $gainedPoints);
     }
 
     // Afficher le résultat du quiz passé
