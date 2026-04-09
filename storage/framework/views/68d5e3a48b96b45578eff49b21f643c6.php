@@ -11,22 +11,28 @@
     <form method="POST" action="<?php echo e(route('login')); ?>" class="space-y-6">
         <?php echo csrf_field(); ?>
 
-        <div class="text-center mb-6">
-            <h3 class="text-2xl font-bold text-gray-900">Connexion</h3>
-            <p class="text-sm text-gray-500 mt-1">Veuillez vous authentifier pour générer vos quiz.</p>
+        <div class="mb-8 p-3 bg-slate-900 border-l-4 border-green-500">
+            <h3 class="text-xl font-bold text-white uppercase tracking-tighter">Accès Opérateur</h3>
+            <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest leading-tight">Veuillez injecter vos identifiants de session.</p>
+        </div>
+
+        <!-- Role Indicator (Visual only) -->
+        <div class="flex justify-between items-center px-3 py-2 bg-slate-900/50 rounded text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-[0.2em] border border-slate-700">
+            <span>Privilège : </span>
+            <span class="text-green-500 animate-pulse">Invité_Std</span>
         </div>
 
         <!-- Email Address -->
         <div>
-            <label for="email" class="block text-sm font-medium text-gray-700">Adresse Email</label>
+            <label for="email" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">> Email_Address</label>
             <input id="email" type="email" name="email" value="<?php echo e(old('email')); ?>" required autofocus
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border">
+                   class="block w-full bg-slate-900 border-slate-700 rounded text-green-300 placeholder-slate-700 focus:border-green-500 focus:ring-green-500 py-2 px-3 border transition-colors font-mono text-sm shadow-inner" placeholder="admin@bughunter.ai">
             <?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                <span class="text-red-600 text-sm mt-1"><?php echo e($message); ?></span>
+                <span class="text-red-500 text-[10px] mt-1 font-bold uppercase tracking-widest">[ FAIL ] <?php echo e($message); ?></span>
             <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
@@ -34,26 +40,30 @@ unset($__errorArgs, $__bag); ?>
         </div>
 
         <!-- Password -->
-        <div>
-            <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+        <div class="mt-4">
+            <label for="password" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">> Password_Crypted</label>
             <input id="password" type="password" name="password" required
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border">
+                   class="block w-full bg-slate-900 border-slate-700 rounded text-green-300 placeholder-slate-700 focus:border-green-500 focus:ring-green-500 py-2 px-3 border transition-colors font-mono text-sm shadow-inner" placeholder="********">
             <?php $__errorArgs = ['password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                <span class="text-red-600 text-sm mt-1"><?php echo e($message); ?></span>
+                <span class="text-red-500 text-[10px] mt-1 font-bold uppercase tracking-widest">[ FAIL ] <?php echo e($message); ?></span>
             <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
         </div>
 
-        <div class="flex items-center justify-end mt-6">
-            <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition">
-                Se connecter
+        <div class="flex flex-col gap-4 mt-8">
+            <button type="submit" class="w-full flex justify-center py-3 px-4 border border-green-500 rounded bg-green-600 hover:bg-green-500 text-black text-xs font-black uppercase tracking-[0.3em] transition-all shadow-[0_0_15px_rgba(34,197,94,0.2)] active:scale-95">
+                Authentifier()
             </button>
+            
+            <a href="<?php echo e(route('register')); ?>" class="text-[10px] text-slate-600 hover:text-green-400 text-center uppercase tracking-widest transition-colors">
+                [ Créer un nouvel opérateur ]
+            </a>
         </div>
     </form>
  <?php echo $__env->renderComponent(); ?>

@@ -19,8 +19,10 @@ class IAQuizGeneratorController extends Controller
 
     public function generate(Request $request)
     {
+        $allowedSubjects = ['PHP', 'JavaScript', 'Python', 'Java', 'C#', 'C++', 'Go', 'Rust', 'SQL', 'React', 'TypeScript'];
+
         $data = $request->validate([
-            'subject' => 'required|string|max:100',
+            'subject' => 'required|string|in:' . implode(',', $allowedSubjects),
             'difficulty' => 'required|string|in:Junior,Medior,Senior',
             'count' => 'required|integer|min:1|max:10',
             'answers' => 'required|integer|min:2|max:6',

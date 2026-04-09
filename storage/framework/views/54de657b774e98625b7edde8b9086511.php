@@ -5,36 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
-    <title>Quiz AI Generator</title>
+    <title>BugHunter AI - Mission Control</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=fira-code:400,600,700|inter:400,500,600,700&display=swap" rel="stylesheet" />
 
-    <!-- CDN Tailwind for 100% disconnect from old assets -->
+    <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                }
+            }
+        }
+    </script>
 </head>
-<body class="font-sans antialiased justify-center bg-gray-50">
-    <div class="min-h-screen">
+<body class="font-mono text-slate-300 antialiased bg-slate-900 border-t-4 border-green-600">
+    <div class="min-h-screen flex flex-col">
         
-        <!-- Navbar Minimaliste -->
-        <nav class="bg-indigo-600 shadow-md border-b border-indigo-700">
+        <!-- Terminal Style Navbar -->
+        <nav class="bg-slate-900 border-b border-slate-800 shadow-lg">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex">
+                <div class="flex justify-between h-16 items-center">
+                    <div class="flex items-center gap-4">
                         <div class="shrink-0 flex items-center">
-                            <a href="<?php echo e(route('quizzes.index')); ?>" class="text-white font-black text-2xl tracking-tighter">
-                                ✨ Quiz AI
+                            <a href="<?php echo e(route('quizzes.index')); ?>" class="text-white font-bold text-xl tracking-tighter flex items-center gap-2">
+                                <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                                BugHunter<span class="text-green-500">_</span>AI
                             </a>
                         </div>
                     </div>
 
                     <div class="flex items-center space-x-6">
-                        <span class="text-indigo-100 text-sm font-medium"><?php echo e(auth()->user()->name ?? 'Utilisateur'); ?></span>
+                        <div class="hidden md:flex flex-col items-end">
+                            <span class="text-green-500 text-[10px] leading-none uppercase tracking-widest font-bold">Session active</span>
+                            <span class="text-slate-400 text-xs"><?php echo e(auth()->user()->name ?? 'Opérateur'); ?></span>
+                        </div>
                         <form method="POST" action="<?php echo e(route('logout')); ?>">
                             <?php echo csrf_field(); ?>
-                            <button type="submit" class="bg-indigo-800 hover:bg-indigo-900 text-white px-3 py-1.5 rounded-md text-sm font-bold transition-colors">
-                                Déconnexion
+                            <button type="submit" class="border border-red-900/50 bg-red-950/20 hover:bg-red-600 hover:text-white text-red-400 px-3 py-1 text-[10px] font-bold uppercase tracking-widest transition-all rounded-sm">
+                                [ Terminate ]
                             </button>
                         </form>
                     </div>
@@ -42,24 +58,26 @@
             </div>
         </nav>
 
-        <!-- Page Heading -->
+        <!-- Subheader (Terminal path) -->
         <?php if(isset($header)): ?>
-            <header class="bg-white shadow-sm border-b border-gray-200">
-                <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 text-gray-800">
-                    <?php echo e($header); ?>
+            <header class="bg-slate-800/50 border-b border-slate-800 shadow-sm">
+                <div class="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8 text-xs font-mono text-slate-500 uppercase tracking-widest">
+                    <span class="text-green-600">root@bughunter</span>:<?php echo e(request()->path()); ?>$ <?php echo e($header); ?>
 
                 </div>
             </header>
         <?php endif; ?>
 
-        <!-- Page Content -->
-        <main class="mt-6">
+        <!-- Main Workspace -->
+        <main class="flex-grow py-8">
             <?php echo e($slot); ?>
 
         </main>
 
-        <footer class="mt-16 py-6 text-center text-gray-400 text-sm">
-            &copy; <?php echo e(date('Y')); ?> Quiz AI Generator. Un projet minimaliste.
+        <footer class="py-10 border-t border-slate-800 text-center">
+            <p class="text-[10px] text-slate-600 uppercase tracking-widest">
+                &copy; <?php echo e(date('Y')); ?> BUX_HUNTER_V2.0 // SYSTEM CORE ATTACHED
+            </p>
         </footer>
     </div>
 </body>
