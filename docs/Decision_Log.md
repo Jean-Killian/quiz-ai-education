@@ -57,5 +57,17 @@ Chaque décision suit la structure de référence MADR (Markdown Architecture De
 
 ---
 
+### [ADR-005] DevOps : Stratégie de Conteneurisation (Docker)
+- **Date :** 9 Avril 2026
+- **Catégorie :** DevOps / C/I
+- **Contexte :** Pour la livraison de l'application (US35), il y avait le besoin de fiabiliser l'exécution en construisant une image de l'application prête pour la production.
+- **Options :**
+  1. Utiliser Laravel Sail (trop orienté développement local).
+  2. Créer un Dockerfile personnalisé Multi-stage.
+- **Choix Retenu :** **Option 2 (Dockerfile Multi-stage).**
+- **Compromis accepté :** Demande un effort de maintenance du Dockerfile au gré des mises à jour des dépendances, mais garantit une image optimisée en isolant les étapes Node (assets Frontend), Composer (dépendances PHP) et l'exécution de PHP/Apache, évitant l'empaquetage de librairies inutiles en production.
+
+---
+
 > [!IMPORTANT]
 > **Directive de Développement :** À chaque nouvelle crise d'architecture future (ex: Ajout d'une base NoSQL, Refonte des rôles, Stratégie de mise en cache LLM), ce journal **doit** être mis à jour !
