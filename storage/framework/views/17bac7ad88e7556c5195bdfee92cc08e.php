@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>" class="scroll-smooth">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,9 +12,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Styles / Scripts -->
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @else
+    <?php if(file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot'))): ?>
+        <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
+    <?php else: ?>
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
@@ -37,7 +37,7 @@
                 }
             }
         </script>
-    @endif
+    <?php endif; ?>
     <style>
         body { font-family: 'Inter', sans-serif; }
         .glassb {
@@ -70,23 +70,23 @@
                     <a href="#usages" class="text-slate-600 hover:text-primary-600 font-medium transition-colors">Comment ça marche</a>
                     <a href="#benefices" class="text-slate-600 hover:text-primary-600 font-medium transition-colors">Avantages</a>
                     
-                    @if (Route::has('login'))
+                    <?php if(Route::has('login')): ?>
                         <div class="flex items-center gap-4 ml-4 pl-4 border-l border-slate-200">
-                            @auth
-                                <a href="{{ route('quizzes.index') }}" class="font-medium text-slate-700 hover:text-primary-600 transition-colors">Mon Espace</a>
-                                <a href="{{ route('quizzes.generate') }}" class="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                            <?php if(auth()->guard()->check()): ?>
+                                <a href="<?php echo e(route('quizzes.index')); ?>" class="font-medium text-slate-700 hover:text-primary-600 transition-colors">Mon Espace</a>
+                                <a href="<?php echo e(route('quizzes.generate')); ?>" class="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                                     Créer un Quiz
                                 </a>
-                            @else
-                                <a href="{{ route('login') }}" class="font-medium text-slate-700 hover:text-primary-600 transition-colors">Connexion</a>
-                                @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                            <?php else: ?>
+                                <a href="<?php echo e(route('login')); ?>" class="font-medium text-slate-700 hover:text-primary-600 transition-colors">Connexion</a>
+                                <?php if(Route::has('register')): ?>
+                                    <a href="<?php echo e(route('register')); ?>" class="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                                         S'inscrire
                                     </a>
-                                @endif
-                            @endauth
+                                <?php endif; ?>
+                            <?php endif; ?>
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -118,7 +118,7 @@
             </p>
             
             <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-primary-600 hover:bg-primary-700 rounded-full shadow-lg hover:shadow-primary-500/30 transition-all transform hover:-translate-y-1">
+                <a href="<?php echo e(route('register')); ?>" class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-primary-600 hover:bg-primary-700 rounded-full shadow-lg hover:shadow-primary-500/30 transition-all transform hover:-translate-y-1">
                     Commencer gratuitement
                     <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
                 </a>
@@ -288,7 +288,7 @@
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <h2 class="text-4xl md:text-5xl font-extrabold mb-6">Prêt à valider votre semestre ?</h2>
             <p class="text-xl text-slate-300 mb-10 font-light">Rejoignez de nombreux étudiants qui optimisent déjà leur temps d'apprentissage avec QuizAI.</p>
-            <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-slate-900 bg-white hover:bg-slate-100 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
+            <a href="<?php echo e(route('register')); ?>" class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-slate-900 bg-white hover:bg-slate-100 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
                 Créer mon compte étudiant maintenant
                 <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </a>
@@ -316,3 +316,4 @@
 
 </body>
 </html>
+<?php /**PATH C:\Users\mat95\OneDrive\Bureau\ProjetEcole\quiz-ai-education\resources\views/welcome.blade.php ENDPATH**/ ?>
