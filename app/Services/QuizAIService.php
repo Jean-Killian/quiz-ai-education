@@ -61,7 +61,7 @@ class QuizAIService
     protected function buildRequestBody(string $prompt): array
     {
         return [
-            'model' => 'llama3-70b-8192', // or llama3-8b-8192 for even faster 
+            'model' => 'llama-3.3-70b-versatile', // Update to the active Groq Llama 3.3 model
             'messages' => [
                 [
                     'role' => 'system',
