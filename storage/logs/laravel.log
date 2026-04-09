@@ -2538,3 +2538,55 @@ Format strict attendu:
   }
 }
 "} 
+[2026-04-09 12:13:14] local.INFO: Sending request to Gemini API  
+[2026-04-09 12:14:22] local.INFO: Sending request to Gemini API  
+[2026-04-09 12:14:55] local.ERROR: Gemini API error {"error":"{
+  \"error\": {
+    \"code\": 503,
+    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",
+    \"status\": \"UNAVAILABLE\"
+  }
+}
+"} 
+[2026-04-09 12:15:11] local.INFO: Sending request to Gemini API  
+[2026-04-09 12:15:39] local.INFO: Gemini API response received successfully  
+[2026-04-09 12:19:44] local.INFO: Sending request to Gemini API  
+[2026-04-09 12:19:49] local.ERROR: Gemini API error {"error":"{
+  \"error\": {
+    \"code\": 503,
+    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",
+    \"status\": \"UNAVAILABLE\"
+  }
+}
+"} 
+[2026-04-09 12:20:01] local.INFO: Sending request to Gemini API  
+[2026-04-09 12:21:02] local.ERROR: Gemini API error {"error":"{
+  \"error\": {
+    \"code\": 503,
+    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",
+    \"status\": \"UNAVAILABLE\"
+  }
+}
+"} 
+[2026-04-09 12:21:18] local.INFO: Sending request to Gemini API  
+[2026-04-09 12:23:02] local.ERROR: Gemini API error {"error":"{
+  \"error\": {
+    \"code\": 503,
+    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",
+    \"status\": \"UNAVAILABLE\"
+  }
+}
+"} 
+[2026-04-09 12:24:09] local.INFO: Sending request to Gemini API  
+[2026-04-09 12:24:12] local.ERROR: Gemini API error {"error":"{
+  \"error\": {
+    \"code\": 503,
+    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",
+    \"status\": \"UNAVAILABLE\"
+  }
+}
+"} 
+[2026-04-09 12:24:21] local.INFO: Sending request to Gemini API  
+[2026-04-09 12:24:52] local.INFO: Gemini API response received successfully  
+[2026-04-09 14:41:14] local.INFO: Sending request to Groq API  
+[2026-04-09 14:41:16] local.INFO: Groq API response received successfully  

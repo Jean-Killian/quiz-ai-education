@@ -84,11 +84,11 @@ EOT;
 
     private function fetchQuizFromAI(string $prompt): array
     {
-        $gemini = new QuizAIService();
-        $response = $gemini->generateQuestionnaire($prompt);
+        $ai = new QuizAIService();
+        $response = $ai->generateQuestionnaire($prompt);
 
-        // Gemini met le texte dans cette arborescence
-        $content = $response['candidates'][0]['content']['parts'][0]['text'] ?? '';
+        // API au format OpenAI met le texte dans cette arborescence
+        $content = $response['choices'][0]['message']['content'] ?? '';
         
         $start = strpos($content, '{');
         $end = strrpos($content, '}');

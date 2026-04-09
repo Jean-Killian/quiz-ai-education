@@ -57,5 +57,17 @@ Chaque décision suit la structure de référence MADR (Markdown Architecture De
 
 ---
 
+### [ADR-005] Changement de fournisseur LLM : Migration vers Groq
+- **Date :** 9 Avril 2026
+- **Catégorie :** Intelligence Artificielle / Performances
+- **Contexte :** L'API précédemment utilisée manquait de rapidité. Le besoin en réactivité (fluidité de l'interface) a imposé la recherche d'une solution d'inférence extrêmement rapide.
+- **Options :**
+  1. Conserver l'API existante.
+  2. Passer sur un modèle via Groq (utilisant des LPU pour une inférence à très haute vitesse) via un endpoint compatible OpenAI.
+- **Choix Retenu :** **Option 2 (Groq).**
+- **Compromis accepté :** Le format de réponse interne a nécessité une adaptation (passant de `candidates[0]...` au format OpenAI `choices[0].message.content`). Il faut également configurer les nouvelles variables d'environnement (`GROQ_API_KEY`).
+
+---
+
 > [!IMPORTANT]
 > **Directive de Développement :** À chaque nouvelle crise d'architecture future (ex: Ajout d'une base NoSQL, Refonte des rôles, Stratégie de mise en cache LLM), ce journal **doit** être mis à jour !
