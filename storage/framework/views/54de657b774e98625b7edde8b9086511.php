@@ -42,37 +42,63 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center space-x-8">
-                        <!-- Navigation Links -->
-                        <div class="hidden lg:flex space-x-6 mr-4 border-r border-slate-800 pr-6">
-                            <a href="<?php echo e(route('quizzes.index')); ?>" class="text-[10px] uppercase tracking-widest font-bold <?php echo e(request()->routeIs('quizzes.index') ? 'text-green-500' : 'text-slate-500 hover:text-slate-300'); ?>">Archives_Cibles</a>
-                            <a href="<?php echo e(route('quizzes.generate')); ?>" class="text-[10px] uppercase tracking-widest font-bold <?php echo e(request()->routeIs('quizzes.generate') ? 'text-green-500' : 'text-slate-500 hover:text-slate-300'); ?>">Initialiser_Traque</a>
-                            <a href="<?php echo e(route('leaderboard')); ?>" class="text-[10px] uppercase tracking-widest font-bold <?php echo e(request()->routeIs('leaderboard') ? 'text-green-500' : 'text-slate-500 hover:text-slate-300'); ?>">Classement_Elite</a>
-                            <a href="<?php echo e(route('profile.edit')); ?>" class="text-[10px] uppercase tracking-widest font-bold <?php echo e(request()->routeIs('profile.edit') ? 'text-green-500' : 'text-slate-500 hover:text-slate-300'); ?>">Profil_Opérateur</a>
+                    <div class="flex items-center gap-6">
+                        <!-- Navigation Links (Left Group) -->
+                        <div class="hidden lg:flex items-center space-x-4 border-r border-slate-800 pr-6">
+                            <a href="<?php echo e(route('quizzes.index')); ?>" class="px-3 py-1.5 rounded text-[10px] uppercase tracking-widest font-bold <?php echo e(request()->routeIs('quizzes.index') ? 'bg-green-500 text-black shadow-[0_0_10px_rgba(34,197,94,0.5)]' : 'text-slate-500 hover:text-slate-300'); ?> transition-all">Archives_Cibles</a>
+                            <a href="<?php echo e(route('quizzes.generate')); ?>" class="px-3 py-1.5 rounded text-[10px] uppercase tracking-widest font-bold <?php echo e(request()->routeIs('quizzes.generate') ? 'bg-green-500 text-black shadow-[0_0_10px_rgba(34,197,94,0.5)]' : 'text-slate-500 hover:text-slate-300'); ?> transition-all">Initialiser_Traque</a>
                         </div>
 
-                        <!-- Mute Toggle -->
-                        <button id="muteToggle" class="text-slate-500 hover:text-green-400 transition-colors p-1 rounded border border-slate-800 bg-slate-900/50" title="Activer/Désactiver les SFX">
-                            <svg id="iconVolumeOn" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
-                            <svg id="iconVolumeOff" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" opacity=".5"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>
-                        </button>
-
-                        <!-- Global Score -->
-                        <div class="flex items-center gap-3 bg-green-950/30 border border-green-500/50 px-3 py-1.5 rounded shadow-[0_0_15px_rgba(34,197,94,0.1)]">
-                            <span class="text-green-600 text-[9px] font-black uppercase tracking-tighter">Reputation</span>
-                            <span class="text-green-400 text-sm font-black"><?php echo e(auth()->user()->global_score ?? 0); ?> XP</span>
+                        <!-- Global Score (Compact) -->
+                        <div class="flex items-center gap-2 bg-slate-950/50 border border-green-500/20 px-3 py-1.5 rounded shadow-inner">
+                            <span class="text-green-600 text-[8px] font-black uppercase tracking-tighter">Rep</span>
+                            <span class="text-green-400 text-xs font-black font-mono"><?php echo e(number_format(auth()->user()->global_score ?? 0)); ?></span>
                         </div>
 
-                        <div class="hidden md:flex flex-col items-end">
-                            <span class="text-green-500 text-[10px] leading-none uppercase tracking-widest font-bold">Session active</span>
-                            <span class="text-slate-400 text-xs"><?php echo e(auth()->user()->name ?? 'Opérateur'); ?></span>
-                        </div>
-                        <form method="POST" action="<?php echo e(route('logout')); ?>">
-                            <?php echo csrf_field(); ?>
-                            <button type="submit" class="border border-red-900/50 bg-red-950/20 hover:bg-red-600 hover:text-white text-red-400 px-3 py-1 text-[10px] font-bold uppercase tracking-widest transition-all rounded-sm">
-                                [ Terminate ]
+                        <!-- Operator Hub (Dropdown) -->
+                        <div class="relative group">
+                            <button id="hubToggle" class="flex items-center gap-3 bg-slate-800 hover:bg-slate-700 px-4 py-2 border border-slate-700 rounded-sm transition-all group-hover:border-green-500/50">
+                                <div class="size-6 rounded-sm border border-green-500/30 overflow-hidden bg-slate-900 hidden md:block">
+                                    <img src="<?php echo e(auth()->user()->avatar_url); ?>" alt="AV" class="w-full h-full object-cover">
+                                </div>
+                                <span class="text-[10px] uppercase tracking-widest font-black text-slate-300">Operator_Hub</span>
+                                <svg class="w-3 h-3 text-slate-500 group-hover:text-green-500 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
                             </button>
-                        </form>
+                            
+                            <!-- Dropdown Menu -->
+                            <div id="hubMenu" class="absolute right-0 mt-2 w-56 bg-slate-900 border border-slate-700 rounded shadow-2xl invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all z-50 py-2">
+                                <div class="px-4 py-2 border-b border-slate-800 mb-2">
+                                    <span class="block text-[8px] uppercase tracking-widest text-slate-500">Status</span>
+                                    <span class="block text-xs font-bold text-green-500"><?php echo e(auth()->user()->name); ?> // ACTIVE</span>
+                                </div>
+
+                                <a href="<?php echo e(route('profile.edit')); ?>" class="flex items-center gap-3 px-4 py-2 text-[10px] uppercase tracking-widest font-bold text-slate-300 hover:bg-slate-800 hover:text-green-400 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                    Profil_Perso
+                                </a>
+
+                                <a href="<?php echo e(route('leaderboard')); ?>" class="flex items-center gap-3 px-4 py-2 text-[10px] uppercase tracking-widest font-bold text-slate-300 hover:bg-slate-800 hover:text-green-400 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                                    Leaderboard
+                                </a>
+
+                                <div class="px-4 py-2 border-t border-slate-800 mt-2 flex items-center justify-between">
+                                    <span class="text-[10px] uppercase font-bold text-slate-500">SFX_Engine</span>
+                                    <button id="muteToggle" class="text-slate-500 hover:text-green-400 transition-colors p-1" title="Mute/Unmute">
+                                        <svg id="iconVolumeOn" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                                        <svg id="iconVolumeOff" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" opacity=".5"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>
+                                    </button>
+                                </div>
+
+                                <form method="POST" action="<?php echo e(route('logout')); ?>" class="px-2 pt-2 border-t border-slate-800">
+                                    <?php echo csrf_field(); ?>
+                                    <button type="submit" class="w-full text-left flex items-center gap-3 px-2 py-2 text-[10px] uppercase tracking-widest font-black text-red-500 hover:bg-red-950/30 transition-colors rounded">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                                        [ Terminate_Login ]
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

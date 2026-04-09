@@ -127,22 +127,31 @@
 
     <!-- SFX Engine -->
     <script>
-        const SFX = {
-            click: new Audio('https://www.soundjay.com/buttons/button-16.mp3'),
-            success: new Audio('https://www.soundjay.com/buttons/button-3.mp3'),
-            error: new Audio('https://www.soundjay.com/buttons/button-10.mp3')
+        const SFX_FILES = {
+            click: 'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3',
+            success: 'https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3',
+            error: 'https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3'
         };
 
-        // Configuration du volume
-        Object.values(SFX).forEach(audio => {
-            audio.volume = 0.2;
-        });
+        const SFX = {};
+        let isMuted = localStorage.getItem('hg_muted') === 'true';
+        let audioUnlocked = false;
+
+        // Pré-chargement
+        function initAudio() {
+            if (audioUnlocked) return;
+            Object.keys(SFX_FILES).forEach(key => {
+                SFX[key] = new Audio(SFX_FILES[key]);
+                SFX[key].volume = 0.2;
+                SFX[key].load();
+            });
+            audioUnlocked = true;
+            console.log("Audio Engine Primed");
+        }
 
         const muteToggle = document.getElementById('muteToggle');
         const iconOn = document.getElementById('iconVolumeOn');
         const iconOff = document.getElementById('iconVolumeOff');
-
-        let isMuted = localStorage.getItem('hg_muted') === 'true';
 
         function updateUI() {
             if (isMuted) {
@@ -155,34 +164,34 @@
         }
 
         function playSound(sound) {
+            initAudio(); // Assure l'initialisation sur interaction
             if (isMuted) return;
             const audio = SFX[sound];
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log('Audio play blocked'));
+                audio.play().catch(e => console.log('Audio blocked:', e));
             }
         }
 
         muteToggle.addEventListener('click', (e) => {
             e.stopPropagation();
+            initAudio();
             isMuted = !isMuted;
             localStorage.setItem('hg_muted', isMuted);
             updateUI();
             if (!isMuted) playSound('click');
         });
 
-        // Global Click Listener for buttons and links
-        document.addEventListener('click', (e) => {
+        // Global Click Listener
+        document.addEventListener('mousedown', (e) => {
+            initAudio();
             const target = e.target.closest('button, a');
             if (target && target.id !== 'muteToggle') {
                 playSound('click');
             }
         });
 
-        // Initialize UI
         updateUI();
-
-        // Exporter pour un usage spécifique (ex: résultats quiz)
         window.BugHunterAudio = { play: playSound };
     </script>
 </body>
