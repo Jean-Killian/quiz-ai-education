@@ -69,6 +69,19 @@
                                             </div>
                                         </div>
                                     @endforeach
+
+                                    {{-- AI Explanation Block --}}
+                                    @if($question->explanation)
+                                        <div class="mt-6 border-l-2 border-green-500 bg-slate-950/50 p-4 rounded-r shadow-inner">
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <span class="text-green-500 text-[10px] font-black uppercase tracking-[0.2em] bg-green-950 px-2 py-0.5 rounded border border-green-500/30">Expert_Analysis</span>
+                                                <div class="h-px flex-grow bg-green-900/30"></div>
+                                            </div>
+                                            <p class="text-xs font-mono text-slate-300 leading-relaxed italic">
+                                                {{ $question->explanation }}
+                                            </p>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach
