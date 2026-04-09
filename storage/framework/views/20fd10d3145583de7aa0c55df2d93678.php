@@ -109,6 +109,19 @@
 
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.BugHunterAudio) {
+                const score = <?php echo e($score); ?>;
+                if (score > 0) {
+                    window.BugHunterAudio.play('success');
+                } else {
+                    window.BugHunterAudio.play('error');
+                }
+            }
+        });
+    </script>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>

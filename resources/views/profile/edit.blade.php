@@ -62,21 +62,21 @@
                             <label for="name" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">> Operator_Name</label>
                             <input id="name" name="name" type="text" value="{{ old('name', auth()->user()->name) }}" required
                                    class="block w-full bg-slate-900 border-slate-700 rounded text-green-300 placeholder-slate-700 focus:border-green-500 focus:ring-green-500 py-2 px-3 border transition-colors font-mono text-sm shadow-inner">
-                            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                            <x-forms.input-error class="mt-2" :messages="$errors->get('name')" />
                         </div>
 
                         <div>
                             <label for="email" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">> Email_Internal</label>
                             <input id="email" name="email" type="email" value="{{ old('email', auth()->user()->email) }}" required
                                    class="block w-full bg-slate-900 border-slate-700 rounded text-green-300 placeholder-slate-700 focus:border-green-500 focus:ring-green-500 py-2 px-3 border transition-colors font-mono text-sm shadow-inner">
-                            <x-input-error class="mt-2" :messages="$errors->get('email')" />
+                            <x-forms.input-error class="mt-2" :messages="$errors->get('email')" />
                         </div>
 
                         <div>
                             <label for="profile_photo" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">> Update_Avatar (IMG)</label>
                             <input id="profile_photo" name="profile_photo" type="file"
                                    class="block w-full bg-slate-900 border-slate-700 rounded text-slate-400 file:bg-slate-800 file:text-green-500 file:border-0 file:py-1 file:px-3 file:mr-4 file:text-xs file:uppercase file:font-black focus:border-green-500 border transition-colors font-mono text-[10px] py-1">
-                            <x-input-error class="mt-2" :messages="$errors->get('profile_photo')" />
+                            <x-forms.input-error class="mt-2" :messages="$errors->get('profile_photo')" />
                         </div>
 
                         <div class="flex items-center gap-4 pt-2">
@@ -105,14 +105,14 @@
                             <label for="current_password" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">> Old_Cipher</label>
                             <input id="current_password" name="current_password" type="password"
                                    class="block w-full bg-slate-900 border-slate-700 rounded text-green-300 placeholder-slate-700 focus:border-green-500 focus:ring-green-500 py-2 px-3 border transition-colors font-mono text-sm shadow-inner">
-                            <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
+                            <x-forms.input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
                         </div>
 
                         <div>
                             <label for="password" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">> New_Cipher</label>
                             <input id="password" name="password" type="password"
                                    class="block w-full bg-slate-900 border-slate-700 rounded text-green-300 placeholder-slate-700 focus:border-green-500 focus:ring-green-500 py-2 px-3 border transition-colors font-mono text-sm shadow-inner">
-                            <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
+                            <x-forms.input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
                         </div>
 
                         <div class="flex items-center gap-4 pt-2">
