@@ -9,7 +9,11 @@ use Illuminate\Support\Facades\Auth;
 
 class QuizController extends Controller
 {
-    // Afficher la liste des quiz
+    /**
+     * Affiche la liste des quiz disponibles pour l'utilisateur.
+     * 
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $quizzes = Quiz::all();
@@ -19,7 +23,12 @@ class QuizController extends Controller
         return view('quizzes.index', compact('quizzes', 'userQuizzes'));
     }
 
-    // Afficher le formulaire pour un quiz spécifique
+    /**
+     * Affiche le formulaire d'un quiz spécifique.
+     * 
+     * @param Quiz $quiz
+     * @return \Illuminate\View\View
+     */
     public function show(Quiz $quiz)
     {
         // On charge les questions avec leurs réponses pour éviter le problème N+1
@@ -27,7 +36,13 @@ class QuizController extends Controller
         return view('quizzes.show', compact('quiz'));
     }
 
-    // Calculer le score et le sauvegarder
+    /**
+     * Calcule le score final de la tentative et sauvegarde le résultat.
+     * 
+     * @param Request $request
+     * @param Quiz $quiz
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function submit(Request $request, Quiz $quiz)
     {
         $score = 0;
@@ -43,20 +58,24 @@ class QuizController extends Controller
             }
         }
 
-        // Sauvegarder le score pour l'utilisateur
-        // 'false' indique qu'on ne détache pas les autres quiz (équivalent syncWithoutDetaching avec mise à jour du score)
+        // Sauvegarder le score pour l'utilisateur via la table pivot
         Auth::user()->quizzes()->sync([
             $quiz->id => ['score' => $score]
         ], false);
 
-        // On passe les réponses de l'utilisateur à la session pour afficher la correction au prochain écran
+        // On passe les réponses à la session pour l'affichage des résultats
         return redirect()->route('quizzes.result', $quiz->id)->with('user_answers', $submittedAnswers);
     }
 
-    // Afficher le résultat du quiz passé
+    /**
+     * Affiche le résultat détaillé d'un quiz après soumission.
+     * 
+     * @param Quiz $quiz
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function result(Quiz $quiz)
     {
-        // On récupère la donnée pivot (le score)
+        // Récupération du score stocké dans la table pivot quiz_user
         $userQuiz = Auth::user()->quizzes()->where('quiz_id', $quiz->id)->first();
         
         if (!$userQuiz) {
@@ -66,7 +85,7 @@ class QuizController extends Controller
         $score = $userQuiz->pivot->score;
         $totalQuestions = $quiz->questions()->count();
 
-        // Charger les questions et réponses pour afficher la correction détaillée si elle existe en session
+        // Chargement pour la correction détaillée
         $quiz->load('questions.answers');
 
         return view('quizzes.result', compact('quiz', 'score', 'totalQuestions'));

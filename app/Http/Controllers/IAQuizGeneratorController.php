@@ -12,11 +12,35 @@ use Illuminate\Support\Facades\Log;
 
 class IAQuizGeneratorController extends Controller
 {
+    /** @var QuizAIService Instance du service d'intelligence artificielle */
+    protected QuizAIService $aiService;
+
+    /**
+     * Initialise le contrôleur avec l'injection du service IA.
+     * 
+     * @param QuizAIService $aiService
+     */
+    public function __construct(QuizAIService $aiService)
+    {
+        $this->aiService = $aiService;
+    }
+
+    /**
+     * Affiche le formulaire de génération de quiz.
+     * 
+     * @return \Illuminate\View\View
+     */
     public function showForm()
     {
         return view('quizzes.generate');
     }
 
+    /**
+     * Traite la demande de génération de quiz via l'IA.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function generate(Request $request)
     {
         $allowedSubjects = ['PHP', 'JavaScript', 'Python', 'Java', 'C#', 'C++', 'Go', 'Rust', 'SQL', 'React', 'TypeScript'];
@@ -39,7 +63,7 @@ class IAQuizGeneratorController extends Controller
             return redirect()->back()->with('error', 'Le quiz généré est vide.');
         }
 
-        // Créer le quiz en BDD
+        // Création du quiz dans la base de données
         $quiz = Quiz::create([
             'title' => 'Code Review [' . $data['difficulty'] . '] : ' . ucfirst($data['subject']),
             'description' => "Mission de débogage contenant " . count($qcm) . " failles ou erreurs générées par IA.",
@@ -63,6 +87,15 @@ class IAQuizGeneratorController extends Controller
         return redirect()->route('quizzes.index')->with('success', 'Votre quiz a bien été généré par l\'IA !');
     }
 
+    /**
+     * Construit le prompt structuré pour l'IA (BugHunter AI Strategy).
+     * 
+     * @param string $subject Langage ou technologie.
+     * @param string $difficulty Niveau de difficulté.
+     * @param int $count Nombre de questions.
+     * @param int $answers Nombre de réponses possibles.
+     * @return string Le prompt formaté.
+     */
     private function buildPrompt(string $subject, string $difficulty, int $count, int $answers): string
     {
         return <<<EOT
@@ -89,20 +122,21 @@ Format strict attendu:
 EOT;
     }
 
+    /**
+     * Récupère et décode les données de quiz depuis l'IA.
+     * 
+     * @param string $prompt
+     * @return array
+     * @throws Exception
+     */
     private function fetchQuizFromAI(string $prompt): array
     {
-        $gemini = new QuizAIService();
-        $response = $gemini->generateQuestionnaire($prompt);
+        $response = $this->aiService->generateQuestionnaire($prompt);
 
         // Format OpenAI / Groq
         $content = $response['choices'][0]['message']['content'] ?? '';
         
-        $start = strpos($content, '{');
-        $end = strrpos($content, '}');
-        
-        if ($start !== false && $end !== false) {
-            $content = substr($content, $start, $end - $start + 1);
-        }
+        $content = $this->aiService->cleanJsonResponse($content);
         
         $data = json_decode($content, true);
         

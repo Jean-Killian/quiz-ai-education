@@ -24,6 +24,10 @@ class QuizAIService
 
     /**
      * Envoie la requête à l'API Groq (Standard OpenAI).
+     * 
+     * @param string $prompt Le prompt de génération du quiz.
+     * @return array La réponse décodée de l'IA.
+     * @throws \Exception Si la requête échoue.
      */
     public function generateQuestionnaire(string $prompt): array
     {
@@ -41,7 +45,7 @@ class QuizAIService
             ]);
 
             $content = $response->getBody()->getContents();
-            Log::info('Groq API response received successfully in ms.');
+            Log::info('Groq API response received successfully.');
 
             return json_decode($content, true);
 
@@ -57,11 +61,14 @@ class QuizAIService
 
     /**
      * Prépare le payload spécifique au format OpenAI pour Groq.
+     * 
+     * @param string $prompt Instructions pour l'IA.
+     * @return array Structure JSON pour l'API.
      */
     protected function buildRequestBody(string $prompt): array
     {
         return [
-            'model' => 'llama-3.3-70b-versatile', // Update to the active Groq Llama 3.3 model
+            'model' => 'llama-3.3-70b-versatile',
             'messages' => [
                 [
                     'role' => 'system',
@@ -77,5 +84,23 @@ class QuizAIService
                 'type' => 'json_object'
             ]
         ];
+    }
+
+    /**
+     * Nettoie une chaîne JSON pouvant être entourée de texte ou de blocs Markdown.
+     * 
+     * @param string $content Le contenu brut renvoyé par l'IA.
+     * @return string Le JSON pur extrait.
+     */
+    public function cleanJsonResponse(string $content): string
+    {
+        $start = strpos($content, '{');
+        $end = strrpos($content, '}');
+
+        if ($start !== false && $end !== false) {
+            return substr($content, $start, $end - $start + 1);
+        }
+
+        return $content;
     }
 }
