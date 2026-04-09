@@ -21,11 +21,12 @@ class IAQuizGeneratorController extends Controller
     {
         $data = $request->validate([
             'subject' => 'required|string|max:100',
+            'difficulty' => 'required|string|in:Junior,Medior,Senior',
             'count' => 'required|integer|min:1|max:10',
             'answers' => 'required|integer|min:2|max:6',
         ]);
 
-        $prompt = $this->buildPrompt($data['subject'], $data['count'], $data['answers']);
+        $prompt = $this->buildPrompt($data['subject'], $data['difficulty'], $data['count'], $data['answers']);
         try {
             $qcm = $this->fetchQuizFromAI($prompt);
         } catch (Exception $e) {
@@ -38,8 +39,8 @@ class IAQuizGeneratorController extends Controller
 
         // Créer le quiz en BDD
         $quiz = Quiz::create([
-            'title' => 'Quiz IA : ' . ucfirst($data['subject']),
-            'description' => 'Ce quiz de ' . count($qcm) . ' questions a été généré automatiquement par intelligence artificielle.',
+            'title' => 'Code Review [' . $data['difficulty'] . '] : ' . ucfirst($data['subject']),
+            'description' => "Mission de débogage contenant " . count($qcm) . " failles ou erreurs générées par IA.",
         ]);
 
         foreach ($qcm as $q) {
@@ -60,22 +61,26 @@ class IAQuizGeneratorController extends Controller
         return redirect()->route('quizzes.index')->with('success', 'Votre quiz a bien été généré par l\'IA !');
     }
 
-    private function buildPrompt(string $subject, int $count, int $answers): string
+    private function buildPrompt(string $subject, string $difficulty, int $count, int $answers): string
     {
         return <<<EOT
-Tu vas générer un QCM. Tu dois retourner UNIQUEMENT un objet JSON valide, sans la moindre phrase d'introduction ou conclusion.
+Tu vas générer une mission de Code Review (Chasse aux Bugs). Tu dois retourner UNIQUEMENT un objet JSON valide, sans conversation.
 Le JSON doit avoir une seule clé "quiz" qui contient un tableau.
-Sujet: {$subject}.
-Il doit contenir exactement {$count} questions.
-Chaque question doit avoir {$answers} choix dans "options".
+Langage de programmation ou Framework : {$subject}.
+Difficulté : {$difficulty}.
+
+Mission : Génère exactement {$count} cas de code review.
+Pour chaque cas, la "question" doit impérativement être un bloc de code formaté en Markdown (ex: ```php ... ```) contenant UN bug caché, une faille de sécurité ou un Code Smell.
+Il doit y avoir exactement {$answers} propositions de correction (patches) dans "options".
+
 Format strict attendu:
 {
   "quiz": [
     {
-      "question": "...",
-      "options": ["choix 1", "choix 2", ...],
-      "answer": "choix correct",
-      "difficulty": "facile"
+      "question": "```\\n// Code avec bug ici\\n```",
+      "options": ["Patch 1", "Patch 2", ...],
+      "answer": "La solution exacte parmi les options",
+      "difficulty": "{$difficulty}"
     }
   ]
 }
