@@ -63,8 +63,32 @@ class QuizController extends Controller
             $quiz->id => ['score' => $score]
         ], false);
 
-        // On passe les réponses à la session pour l'affichage des résultats
-        return redirect()->route('quizzes.result', $quiz->id)->with('user_answers', $submittedAnswers);
+        // --- CALCUL DU SCORE GLOBAL (Points d'XP) ---
+        // Attribution des points selon la difficulté du quiz
+        $pointsPerBug = match($quiz->difficulty) {
+            'Junior' => 10,
+            'Medior' => 25,
+            'Senior' => 50,
+            default  => 10
+        };
+
+        $totalQuestions = $quiz->questions()->count();
+        $gainedPoints = $score * $pointsPerBug;
+
+        // Bonus Perfect (100% correct) : +20% de points
+        if ($score === $totalQuestions && $totalQuestions > 0) {
+            $gainedPoints = floor($gainedPoints * 1.2);
+        }
+
+        // Mise à jour du score global cumulé de l'utilisateur (Leaderboard)
+        $user = Auth::user();
+        $user->global_score += $gainedPoints;
+        $user->save();
+
+        // On passe les réponses et le gain de points à la session pour l'affichage des résultats
+        return redirect()->route('quizzes.result', $quiz->id)
+            ->with('user_answers', $submittedAnswers)
+            ->with('gained_points', $gainedPoints);
     }
 
     /**

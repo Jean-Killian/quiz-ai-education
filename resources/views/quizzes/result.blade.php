@@ -11,9 +11,15 @@
                 <div class="p-6">
                     <h3 class="text-xl font-mono tracking-widest text-gray-500 mb-4">[ BUGS SQUASHED ]</h3>
                     
-                    <div class="text-7xl font-mono font-black text-green-500 mb-6 drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">
+                    <div class="text-7xl font-mono font-black text-green-500 mb-2 drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">
                         {{ $score }} <span class="text-4xl text-gray-600">/ {{ $totalQuestions }}</span>
                     </div>
+
+                    @if(session('gained_points'))
+                        <div class="mb-6 inline-block px-4 py-1 bg-green-900/30 border border-green-500/50 rounded-full text-xs font-bold text-green-400 animate-bounce">
+                            + {{ session('gained_points') }} XP INJECTÉS
+                        </div>
+                    @endif
 
                     <p class="mb-8 font-mono text-lg {{ $score >= ($totalQuestions/2) ? 'text-green-400' : 'text-red-500' }}">
                         @if($score == $totalQuestions)
@@ -69,6 +75,19 @@
                                             </div>
                                         </div>
                                     @endforeach
+
+                                    {{-- AI Explanation Block --}}
+                                    @if($question->explanation)
+                                        <div class="mt-6 border-l-2 border-green-500 bg-slate-950/50 p-4 rounded-r shadow-inner">
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <span class="text-green-500 text-[10px] font-black uppercase tracking-[0.2em] bg-green-950 px-2 py-0.5 rounded border border-green-500/30">Expert_Analysis</span>
+                                                <div class="h-px flex-grow bg-green-900/30"></div>
+                                            </div>
+                                            <p class="text-xs font-mono text-slate-300 leading-relaxed italic">
+                                                {{ $question->explanation }}
+                                            </p>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach

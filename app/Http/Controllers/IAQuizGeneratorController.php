@@ -67,12 +67,14 @@ class IAQuizGeneratorController extends Controller
         $quiz = Quiz::create([
             'title' => 'Code Review [' . $data['difficulty'] . '] : ' . ucfirst($data['subject']),
             'description' => "Mission de débogage contenant " . count($qcm) . " failles ou erreurs générées par IA.",
+            'difficulty' => $data['difficulty'],
         ]);
 
         foreach ($qcm as $q) {
             $question = Question::create([
                 'quiz_id' => $quiz->id,
                 'question_text' => $q['question'],
+                'explanation' => $q['explanation'] ?? null,
             ]);
 
             foreach ($q['options'] as $optionText) {
@@ -115,6 +117,7 @@ Format strict attendu:
       "question": "```\\n// Code avec bug ici\\n```",
       "options": ["Patch 1", "Patch 2", ...],
       "answer": "La solution exacte parmi les options",
+      "explanation": "Brève explication pédagogique du bug et de la solution.",
       "difficulty": "{$difficulty}"
     }
   ]

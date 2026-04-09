@@ -17,8 +17,10 @@ Cet endpoint déclenche le traitement par le Modèle de Langage (LLM). Il est as
 - **Body de Requête (JSON) :**
 ```json
 {
-  "topic": "La révolution française", // (Optionnel) string, max: 255
-  "content": "Le texte brut du cours que l'étudiant vient de copier-coller..." // (Requis) string, min: 100 caractères
+  "subject": "PHP", // (Requis) string, in: WHITE_LIST
+  "difficulty": "Junior", // (Requis) enum: Junior, Medior, Senior
+  "count": 5, // (Optionnel) int, default: 3
+  "answers": 3 // (Optionnel) int, num d'options par question
 }
 ```
 
@@ -78,14 +80,16 @@ Fournit l'ensemble des questions et réponses liées à un Quiz.
 {
   "data": {
     "id": 42,
-    "title": "La révolution française",
+    "title": "Mission_Alpha",
+    "difficulty": "Junior",
     "questions": [
       {
         "id": 105,
-        "question_text": "Quelle date coïncide avec la prise de la Bastille ?",
+        "question_text": "```php\n// snippet\n```",
+        "explanation": "Pourquoi le code est buggé...", // Uniquement renvoyé après quiz ou via endpoint spécifique
         "answers": [
-          { "id": 500, "answer_text": "14 Juillet 1789" },
-          { "id": 501, "answer_text": "5 Mai 1789" }
+          { "id": 500, "answer_text": "Correct Patch" },
+          ...
         ]
       }
     ]
@@ -137,3 +141,21 @@ Si le score existe déjà pour l'étudiant, il est écrasé (Upsert) côté Base
 
 - **Cas d'Erreur :**
   - `422 Unprocessable Entity` : Si l'étudiant a laissé une question sans réponse et que l'interface impose 100% de complétion.
+
+---
+
+## 5. `GET /api/leaderboard` (Hall of Fame)
+
+Retourne les meilleurs opérateurs du réseau.
+
+- **Méthode :** `GET`
+- **Authentification :** Requise.
+- **Réponse Succès (`200 OK`) :**
+```json
+{
+  "data": [
+    { "rank": 1, "name": "Neo", "global_score": 3100 },
+    { "rank": 2, "name": "Morpheus", "global_score": 2450 }
+  ]
+}
+```
