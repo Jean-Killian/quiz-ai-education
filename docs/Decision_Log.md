@@ -1,6 +1,6 @@
 # 📜 Journal des Décisions Techniques (ADR)
 
-Ce document trace l'historique des **décisions structurantes** prises pour le projet "Quiz AI Education". Il a vocation à expliquer "Pourquoi" certains arbitrages techniques, produit ou sécurité ont été pris afin d'éviter les remises en question futures et de faciliter la soutenance du projet.
+Ce document trace l'historique des **décisions structurantes** prises pour le projet "BugHunter AI". Il a vocation à expliquer "Pourquoi" certains arbitrages techniques, produit ou sécurité ont été pris afin d'éviter les remises en question futures et de faciliter la soutenance du projet.
 
 ---
 

@@ -29,8 +29,19 @@
                     <form action="<?php echo e(route('quizzes.generate.post')); ?>" method="POST" onsubmit="showLoader()">
                         <?php echo csrf_field(); ?>
                         <div class="mb-5">
-                            <label class="block text-green-400 text-sm font-bold mb-2 font-mono">> CIBLER LE LANGAGE</label>
-                            <input type="text" name="subject" required class="bg-slate-900 border-gray-600 focus:border-green-500 focus:ring-green-500 rounded-md shadow-sm w-full py-2 px-3 text-green-300 font-mono" placeholder="Ex: PHP, React, SQL Injection...">
+                            <label class="block text-green-400 text-sm font-bold mb-2 font-mono">> CIBLER LE VECTEUR (LANGAGE)</label>
+                            <select name="subject" required class="bg-slate-900 border-gray-600 focus:border-green-500 focus:ring-green-500 rounded-md shadow-sm w-full py-2 px-3 text-green-300 font-mono">
+                                <option value="PHP">PHP (Backend)</option>
+                                <option value="JavaScript">JavaScript (Fullstack)</option>
+                                <option value="TypeScript">TypeScript (Typed JS)</option>
+                                <option value="Python">Python (Scripting/AI)</option>
+                                <option value="Java">Java (Enterprise)</option>
+                                <option value="C#">C# (DotNet)</option>
+                                <option value="SQL">SQL (Database/Security)</option>
+                                <option value="React">React (Frontend Framework)</option>
+                                <option value="Go">Go (Cloud Native)</option>
+                                <option value="Rust">Rust (System Security)</option>
+                            </select>
                         </div>
                         
                         <div class="mb-5">
