@@ -10,39 +10,38 @@ class QuizAIService
 {
     protected Client $client;
     protected string $apiKey;
-    protected string $baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
+    protected string $baseUrl = 'https://api.groq.com/openai/v1/chat/completions';
 
     public function __construct()
     {
-        $this->client = new Client();
-        // Support de l'ancien nom de variable au cas où
-        $this->apiKey = env('GEMINI_API_KEY', env('MISTRAL_API_KEY', ''));
+        $this->client = new Client(['timeout' => 10]); // Fast timeout since Groq is <1s usually
+        $this->apiKey = env('GROQ_API_KEY', env('GEMINI_API_KEY', ''));
         
         if (empty($this->apiKey)) {
-            throw new \InvalidArgumentException("La clé GEMINI_API_KEY est introuvable ou vide dans le fichier .env !");
+            throw new \InvalidArgumentException("La clé GROQ_API_KEY est introuvable ou vide dans le fichier .env !");
         }
     }
 
     /**
-     * Envoie la requête à l'API Gemini.
+     * Envoie la requête à l'API Groq (Standard OpenAI).
      */
     public function generateQuestionnaire(string $prompt): array
     {
         $body = $this->buildRequestBody($prompt);
-        $url = $this->baseUrl . '?key=' . $this->apiKey;
 
         try {
-            Log::info('Sending request to Gemini API');
+            Log::info('Sending request to Groq Llama 3 API for extreme speed.');
 
-            $response = $this->client->post($url, [
+            $response = $this->client->post($this->baseUrl, [
                 'headers' => [
+                    'Authorization' => 'Bearer ' . $this->apiKey,
                     'Content-Type' => 'application/json',
                 ],
                 'json' => $body,
             ]);
 
             $content = $response->getBody()->getContents();
-            Log::info('Gemini API response received successfully');
+            Log::info('Groq API response received successfully in ms.');
 
             return json_decode($content, true);
 
@@ -51,27 +50,31 @@ class QuizAIService
                 ? $e->getResponse()->getBody()->getContents()
                 : $e->getMessage();
 
-            Log::error('Gemini API error', ['error' => $message]);
-            throw new \Exception("Gemini API request failed: " . $message);
+            Log::error('Groq Llama 3 API error', ['error' => $message]);
+            throw new \Exception("Groq API request failed: " . $message);
         }
     }
 
     /**
-     * Prépare le payload spécifique à Gemini.
+     * Prépare le payload spécifique au format OpenAI pour Groq.
      */
     protected function buildRequestBody(string $prompt): array
     {
         return [
-            'contents' => [
+            'model' => 'llama3-70b-8192', // or llama3-8b-8192 for even faster 
+            'messages' => [
                 [
-                    'parts' => [
-                        ['text' => $prompt]
-                    ]
+                    'role' => 'system',
+                    'content' => 'Tu es un expert en code review. Tu dois obligatoirement renvoyer un JSON valide structuré exactement selon la demande, sans aucun autre texte.'
+                ],
+                [
+                    'role' => 'user', 
+                    'content' => $prompt
                 ]
             ],
-            'generationConfig' => [
-                'temperature' => 0.4,
-                'responseMimeType' => 'application/json',
+            'temperature' => 0.3,
+            'response_format' => [
+                'type' => 'json_object'
             ]
         ];
     }

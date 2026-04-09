@@ -92,8 +92,8 @@ EOT;
         $gemini = new QuizAIService();
         $response = $gemini->generateQuestionnaire($prompt);
 
-        // Gemini met le texte dans cette arborescence
-        $content = $response['candidates'][0]['content']['parts'][0]['text'] ?? '';
+        // Format OpenAI / Groq
+        $content = $response['choices'][0]['message']['content'] ?? '';
         
         $start = strpos($content, '{');
         $end = strrpos($content, '}');
