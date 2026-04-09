@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
     <title>BugHunter AI - Mission Control</title>
 
@@ -34,8 +34,8 @@
             --accent-red: 239, 68, 68; /* text-red-500 */
         }
 
-        @auth
-            @if(auth()->user()->theme === 'cyberpunk')
+        <?php if(auth()->guard()->check()): ?>
+            <?php if(auth()->user()->theme === 'cyberpunk'): ?>
             :root {
                 --primary: 217, 70, 239; /* text-fuchsia-500 */
                 --primary-glow: rgba(217, 70, 239, 0.4);
@@ -43,7 +43,7 @@
                 --bg-panel: 29, 20, 64;
                 --accent-red: 244, 63, 94;
             }
-            @elseif(auth()->user()->theme === 'dark_web')
+            <?php elseif(auth()->user()->theme === 'dark_web'): ?>
             :root {
                 --primary: 239, 68, 68; /* text-red-500 */
                 --primary-glow: rgba(239, 68, 68, 0.4);
@@ -51,7 +51,7 @@
                 --bg-panel: 25, 25, 25;
                 --accent-red: 220, 38, 38;
             }
-            @elseif(auth()->user()->theme === 'bios')
+            <?php elseif(auth()->user()->theme === 'bios'): ?>
             :root {
                 --primary: 255, 255, 255; /* text-white */
                 --primary-glow: rgba(255, 255, 255, 0.4);
@@ -59,8 +59,8 @@
                 --bg-panel: 51, 77, 230;
                 --accent-red: 253, 224, 71; /* yellow */
             }
-            @endif
-        @endauth
+            <?php endif; ?>
+        <?php endif; ?>
 
         .theme-primary { color: rgb(var(--primary)); }
         .theme-bg-deep { background-color: rgb(var(--bg-deep)); }
@@ -79,7 +79,7 @@
                 <div class="flex justify-between h-16 items-center">
                     <div class="flex items-center gap-4">
                         <div class="shrink-0 flex items-center">
-                            <a href="{{ route('quizzes.index') }}" class="text-white font-bold text-xl tracking-tighter flex items-center gap-2">
+                            <a href="<?php echo e(route('quizzes.index')); ?>" class="text-white font-bold text-xl tracking-tighter flex items-center gap-2">
                                 <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                                 BugHunter<span class="text-green-500">_</span>AI
                             </a>
@@ -89,22 +89,22 @@
                     <div class="flex items-center gap-6">
                         <!-- Navigation Links (Left Group) -->
                         <div class="hidden lg:flex items-center space-x-4 border-r border-slate-800 pr-6">
-                            <a href="{{ route('quizzes.index') }}" class="px-3 py-1.5 rounded text-[10px] uppercase tracking-widest font-bold {{ request()->routeIs('quizzes.index') ? 'theme-bg-deep theme-primary shadow-[0_0_10px_var(--primary-glow)] border theme-border' : 'text-slate-500 hover:text-slate-300' }} transition-all">Archives_Cibles</a>
-                            <a href="{{ route('quizzes.generate') }}" class="px-3 py-1.5 rounded text-[10px] uppercase tracking-widest font-bold {{ request()->routeIs('quizzes.generate') ? 'theme-bg-deep theme-primary shadow-[0_0_10px_var(--primary-glow)] border theme-border' : 'text-slate-500 hover:text-slate-300' }} transition-all">Initialiser_Traque</a>
-                            <a href="{{ route('logs') }}" class="px-3 py-1.5 rounded text-[10px] uppercase tracking-widest font-bold {{ request()->routeIs('logs') ? 'theme-bg-deep theme-primary shadow-[0_0_10px_var(--primary-glow)] border theme-border' : 'text-slate-500 hover:text-slate-300' }} transition-all">Historique_Log</a>
+                            <a href="<?php echo e(route('quizzes.index')); ?>" class="px-3 py-1.5 rounded text-[10px] uppercase tracking-widest font-bold <?php echo e(request()->routeIs('quizzes.index') ? 'theme-bg-deep theme-primary shadow-[0_0_10px_var(--primary-glow)] border theme-border' : 'text-slate-500 hover:text-slate-300'); ?> transition-all">Archives_Cibles</a>
+                            <a href="<?php echo e(route('quizzes.generate')); ?>" class="px-3 py-1.5 rounded text-[10px] uppercase tracking-widest font-bold <?php echo e(request()->routeIs('quizzes.generate') ? 'theme-bg-deep theme-primary shadow-[0_0_10px_var(--primary-glow)] border theme-border' : 'text-slate-500 hover:text-slate-300'); ?> transition-all">Initialiser_Traque</a>
+                            <a href="<?php echo e(route('logs')); ?>" class="px-3 py-1.5 rounded text-[10px] uppercase tracking-widest font-bold <?php echo e(request()->routeIs('logs') ? 'theme-bg-deep theme-primary shadow-[0_0_10px_var(--primary-glow)] border theme-border' : 'text-slate-500 hover:text-slate-300'); ?> transition-all">Historique_Log</a>
                         </div>
 
                         <!-- Global Score (Compact) -->
                         <div class="flex items-center gap-2 theme-bg-deep border theme-border px-3 py-1.5 rounded shadow-inner">
                             <span class="theme-primary text-[8px] font-black uppercase tracking-tighter opacity-50">Rep</span>
-                            <span class="theme-primary text-xs font-black font-mono">{{ number_format(auth()->user()->global_score ?? 0) }}</span>
+                            <span class="theme-primary text-xs font-black font-mono"><?php echo e(number_format(auth()->user()->global_score ?? 0)); ?></span>
                         </div>
 
                         <!-- Operator Hub (Dropdown) -->
                         <div class="relative group">
                             <button id="hubToggle" class="flex items-center gap-3 theme-bg-panel hover:bg-slate-700 px-4 py-2 border theme-border rounded-sm transition-all group-hover:theme-border-primary">
                                 <div class="size-6 rounded-sm border theme-border overflow-hidden theme-bg-deep hidden md:block">
-                                    <img src="{{ auth()->user()->avatar_url }}" alt="AV" class="w-full h-full object-cover">
+                                    <img src="<?php echo e(auth()->user()->avatar_url); ?>" alt="AV" class="w-full h-full object-cover">
                                 </div>
                                 <span class="text-[10px] uppercase tracking-widest font-black text-slate-300">Operator_Hub</span>
                                 <svg class="w-3 h-3 text-slate-500 group-hover:theme-primary transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
@@ -114,37 +114,38 @@
                             <div id="hubMenu" class="absolute right-0 mt-2 w-56 theme-bg-panel border theme-border rounded shadow-2xl invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all z-50 py-2">
                                 <div class="px-4 py-2 border-b theme-border mb-2">
                                     <span class="block text-[8px] uppercase tracking-widest text-slate-500">Status</span>
-                                    <span class="block text-xs font-bold theme-primary">{{ auth()->user()->name }} // ACTIVE</span>
+                                    <span class="block text-xs font-bold theme-primary"><?php echo e(auth()->user()->name); ?> // ACTIVE</span>
                                 </div>
 
-                                @php
+                                <?php
                                     $pendingDuels = auth()->user()->receivedDuels()->whereNull('defender_score')->where('status', '!=', 'expired')->get();
-                                @endphp
+                                ?>
 
-                                @if($pendingDuels->count() > 0)
+                                <?php if($pendingDuels->count() > 0): ?>
                                     <div class="px-2 mb-2">
                                         <div class="bg-red-950/30 border border-red-500/50 rounded p-2 animate-pulse">
                                             <span class="block text-[8px] uppercase font-black text-red-500 mb-1">DÉFI_INTRUSION_DÉTECTÉ</span>
-                                            @foreach($pendingDuels as $pDuel)
-                                                <a href="{{ route('duels.play', $pDuel->id) }}" class="block text-[10px] text-white hover:text-red-400 font-bold transition-colors">
-                                                    ⚔️ Challenger: {{ $pDuel->challenger->name }}
+                                            <?php $__currentLoopData = $pendingDuels; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pDuel): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <a href="<?php echo e(route('duels.play', $pDuel->id)); ?>" class="block text-[10px] text-white hover:text-red-400 font-bold transition-colors">
+                                                    ⚔️ Challenger: <?php echo e($pDuel->challenger->name); ?>
+
                                                 </a>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </div>
                                     </div>
-                                @endif
+                                <?php endif; ?>
 
-                                <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-2 text-[10px] uppercase tracking-widest font-bold text-slate-300 hover:theme-bg-deep hover:theme-primary transition-colors">
+                                <a href="<?php echo e(route('profile.edit')); ?>" class="flex items-center gap-3 px-4 py-2 text-[10px] uppercase tracking-widest font-bold text-slate-300 hover:theme-bg-deep hover:theme-primary transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                                     Profil_Perso
                                 </a>
 
-                                <a href="{{ route('achievements') }}" class="flex items-center gap-3 px-4 py-2 text-[10px] uppercase tracking-widest font-bold text-slate-300 hover:theme-bg-deep hover:theme-primary transition-colors">
+                                <a href="<?php echo e(route('achievements')); ?>" class="flex items-center gap-3 px-4 py-2 text-[10px] uppercase tracking-widest font-bold text-slate-300 hover:theme-bg-deep hover:theme-primary transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z"></path></svg>
                                     Médailles_Succès
                                 </a>
 
-                                <a href="{{ route('leaderboard') }}" class="flex items-center gap-3 px-4 py-2 text-[10px] uppercase tracking-widest font-bold text-slate-300 hover:theme-bg-deep hover:theme-primary transition-colors">
+                                <a href="<?php echo e(route('leaderboard')); ?>" class="flex items-center gap-3 px-4 py-2 text-[10px] uppercase tracking-widest font-bold text-slate-300 hover:theme-bg-deep hover:theme-primary transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                                     Leaderboard
                                 </a>
@@ -157,8 +158,8 @@
                                     </button>
                                 </div>
 
-                                <form method="POST" action="{{ route('logout') }}" class="px-2 pt-2 border-t theme-border">
-                                    @csrf
+                                <form method="POST" action="<?php echo e(route('logout')); ?>" class="px-2 pt-2 border-t theme-border">
+                                    <?php echo csrf_field(); ?>
                                     <button type="submit" class="w-full text-left flex items-center gap-3 px-2 py-2 text-[10px] uppercase tracking-widest font-black text-red-500 hover:bg-red-950/30 transition-colors rounded">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                                         [ Terminate_Login ]
@@ -172,22 +173,24 @@
         </nav>
 
         <!-- Subheader (Terminal path) -->
-        @isset($header)
+        <?php if(isset($header)): ?>
             <header class="bg-slate-800/50 border-b border-slate-800 shadow-sm">
                 <div class="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8 text-xs font-mono text-slate-500 uppercase tracking-widest">
-                    <span class="text-green-600">root@bughunter</span>:{{ request()->path() }}$ {{ $header }}
+                    <span class="text-green-600">root@bughunter</span>:<?php echo e(request()->path()); ?>$ <?php echo e($header); ?>
+
                 </div>
             </header>
-        @endisset
+        <?php endif; ?>
 
         <!-- Main Workspace -->
         <main class="flex-grow py-8">
-            {{ $slot }}
+            <?php echo e($slot); ?>
+
         </main>
 
         <footer class="py-10 border-t border-slate-800 text-center">
             <p class="text-[10px] text-slate-600 uppercase tracking-widest">
-                &copy; {{ date('Y') }} BUX_HUNTER_V2.0 // SYSTEM CORE ATTACHED
+                &copy; <?php echo e(date('Y')); ?> BUX_HUNTER_V2.0 // SYSTEM CORE ATTACHED
             </p>
         </footer>
     </div>
@@ -263,3 +266,4 @@
     </script>
 </body>
 </html>
+<?php /**PATH C:\Users\mat95\OneDrive\Bureau\ProjetEcole\quiz-ai-education\resources\views/layouts/app.blade.php ENDPATH**/ ?>

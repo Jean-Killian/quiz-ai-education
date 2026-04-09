@@ -46,11 +46,14 @@ Le projet utilise une architecture relationnelle optimisée pour la performance 
 
 ---
 
-## 🎮 4. Gamification & Progression
+## 🎮 4. Gamification & Progression (Expansion "Hacker Core")
 Pour transformer l'apprentissage en expérience immersive, BugHunter AI intègre :
-1. **Système d'EXP** : Gain de points basé sur le nombre de bugs trouvés et la difficulté de la mission.
-2. **Leaderboard Élite** : Un classement en temps réel des meilleurs opérateurs du réseau.
-3. **Analyse Post-Mortem** : Un débriefing technique après chaque mission pour comprendre ses erreurs.
+1. **Système d'EXP & Streaks** : Gain de points basé sur la difficulté et les séries de victoires parfaites (Multiplicateurs).
+2. **Arène des Duels** : Défis asynchrones entre opérateurs. En cas d'égalité de score, le **temps de complétion (ms)** détermine le vainqueur.
+3. **Réputation & Enjeux** : Les duels impliquent un transfert d'XP (Reputation Transfer). Le gagnant capture une partie de l'XP de l'adversaire.
+4. **Badges Élite** : Système de succès récompensant les prouesses techniques, la rapidité et la domination dans l'arène.
+5. **Leaderboard Élite** : Un classement mondial en temps réel des meilleurs opérateurs du réseau.
+6. **Analyse Post-Mortem** : Un débriefing technique pédagogique après chaque mission pour comprendre ses erreurs.
 
 ---
 
@@ -83,4 +86,3 @@ Le projet utilise **GitHub Actions** pour automatiser la chaîne de qualité. To
 
 > [!IMPORTANT]
 > **Blocage de sécurité** : Si les tests échouent ou si le Quality Gate Sonar n'est pas rempli, la fusion (Merge) vers la branche principale est bloquée tant que le code n'est pas corrigé.
-

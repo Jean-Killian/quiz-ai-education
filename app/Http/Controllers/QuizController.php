@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Quiz;
 use App\Models\Answer;
+use App\Models\Badge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -64,7 +65,21 @@ class QuizController extends Controller
         ], false);
 
         // --- CALCUL DU SCORE GLOBAL (Points d'XP) ---
-        // Attribution des points selon la difficulté du quiz
+        $totalQuestions = $quiz->questions()->count();
+        $isPerfect = ($score === $totalQuestions && $totalQuestions > 0);
+
+        // --- GESTION DES STREAKS (SÉRIES) ---
+        $user = Auth::user();
+        if ($isPerfect) {
+            $user->current_streak += 1;
+            if ($user->current_streak > $user->max_streak) {
+                $user->max_streak = $user->current_streak;
+            }
+        } else {
+            $user->current_streak = 0;
+        }
+
+        // Attribution des points de base selon la difficulté du quiz
         $pointsPerBug = match($quiz->difficulty) {
             'Junior' => 10,
             'Medior' => 25,
@@ -72,23 +87,58 @@ class QuizController extends Controller
             default  => 10
         };
 
-        $totalQuestions = $quiz->questions()->count();
-        $gainedPoints = $score * $pointsPerBug;
+        $basePoints = $score * $pointsPerBug;
+        
+        // Multiplicateur de Streak (Bonus de 10% par point de streak, max 2.0x soit 200%)
+        $streakMultiplier = min(2, 1 + ($user->current_streak * 0.1));
+        $gainedPoints = floor($basePoints * $streakMultiplier);
 
-        // Bonus Perfect (100% correct) : +20% de points
-        if ($score === $totalQuestions && $totalQuestions > 0) {
+        // Bonus Perfect supplémentaire (1.2x)
+        if ($isPerfect) {
             $gainedPoints = floor($gainedPoints * 1.2);
         }
 
         // Mise à jour du score global cumulé de l'utilisateur (Leaderboard)
-        $user = Auth::user();
         $user->global_score += $gainedPoints;
         $user->save();
 
-        // On passe les réponses et le gain de points à la session pour l'affichage des résultats
+        // --- DÉBLOCAGE DE BADGES ---
+        $unlockedBadgeIds = [];
+        
+        // Badge: First Blood (Première réussite)
+        if ($score > 0) {
+            $this->unlockBadge($user, 'First Blood', $unlockedBadgeIds);
+        }
+
+        // Badge: Zero Day Finder (Senior Perfect)
+        if ($isPerfect && $quiz->difficulty === 'Senior') {
+            $this->unlockBadge($user, 'Zero Day Finder', $unlockedBadgeIds);
+        }
+
+        // Badge: Overclocker (Série de 5)
+        if ($user->current_streak >= 5) {
+            $this->unlockBadge($user, 'Overclocker', $unlockedBadgeIds);
+        }
+
+        // Badge: Ghost in the Machine (1000 XP cumulés)
+        if ($user->global_score >= 1000) {
+            $this->unlockBadge($user, 'Ghost in the Machine', $unlockedBadgeIds);
+        }
+
+        // On passe les réponses, le gain de points et les badges à la session pour l'affichage
         return redirect()->route('quizzes.result', $quiz->id)
             ->with('user_answers', $submittedAnswers)
-            ->with('gained_points', $gainedPoints);
+            ->with('gained_points', $gainedPoints)
+            ->with('unlocked_badges', $unlockedBadgeIds);
+    }
+
+    protected function unlockBadge($user, $badgeName, &$unlockedBadgeIds)
+    {
+        $badge = Badge::where('name', $badgeName)->first();
+        if ($badge && !$user->badges->contains($badge->id)) {
+            $user->badges()->attach($badge->id);
+            $unlockedBadgeIds[] = $badge->name;
+        }
     }
 
     /**
