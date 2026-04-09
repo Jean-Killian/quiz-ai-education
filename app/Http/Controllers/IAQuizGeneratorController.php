@@ -8,8 +8,12 @@ use App\Models\Answer;
 use App\Services\QuizAIService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Contrôleur responsable de la génération dynamique de quiz par Intelligence Artificielle.
+ */
 class IAQuizGeneratorController extends Controller
 {
     /** @var QuizAIService Instance du service d'intelligence artificielle */
@@ -63,27 +67,34 @@ class IAQuizGeneratorController extends Controller
             return redirect()->back()->with('error', 'Le quiz généré est vide.');
         }
 
-        // Création du quiz dans la base de données
-        $quiz = Quiz::create([
-            'title' => 'Code Review [' . $data['difficulty'] . '] : ' . ucfirst($data['subject']),
-            'description' => "Mission de débogage contenant " . count($qcm) . " failles ou erreurs générées par IA.",
-            'difficulty' => $data['difficulty'],
-        ]);
-
-        foreach ($qcm as $q) {
-            $question = Question::create([
-                'quiz_id' => $quiz->id,
-                'question_text' => $q['question'],
-                'explanation' => $q['explanation'] ?? null,
-            ]);
-
-            foreach ($q['options'] as $optionText) {
-                Answer::create([
-                    'question_id' => $question->id,
-                    'answer_text' => $optionText,
-                    'is_correct' => ($optionText === $q['answer']),
+        // Création atomique du quiz dans la base de données
+        try {
+            DB::transaction(function() use ($qcm, $data, &$quiz) {
+                $quiz = Quiz::create([
+                    'title' => 'Code Review [' . $data['difficulty'] . '] : ' . ucfirst($data['subject']),
+                    'description' => "Mission de débogage contenant " . count($qcm) . " failles ou erreurs générées par IA.",
+                    'difficulty' => $data['difficulty'],
                 ]);
-            }
+
+                foreach ($qcm as $q) {
+                    $question = Question::create([
+                        'quiz_id' => $quiz->id,
+                        'question_text' => $q['question'],
+                        'explanation' => $q['explanation'] ?? null,
+                    ]);
+
+                    foreach ($q['options'] as $optionText) {
+                        Answer::create([
+                            'question_id' => $question->id,
+                            'answer_text' => $optionText,
+                            'is_correct' => ($optionText === $q['answer']),
+                        ]);
+                    }
+                }
+            });
+        } catch (Exception $e) {
+            Log::error("Erreur transactionnelle lors de la création du quiz IA : " . $e->getMessage());
+            return redirect()->back()->with('error', 'Erreur lors de la sauvegarde du quiz dans la base de données.');
         }
 
         return redirect()->route('quizzes.index')->with('success', 'Votre quiz a bien été généré par l\'IA !');

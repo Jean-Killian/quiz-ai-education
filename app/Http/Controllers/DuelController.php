@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Badge;
 use App\Models\Duel;
 use App\Models\Quiz;
 use App\Models\User;
@@ -9,10 +10,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
+/**
+ * Gère l'arène des duels asynchrones entre opérateurs.
+ */
 class DuelController extends Controller
 {
     /**
-     * Show form to initiate a duel against a specific user.
+     * Affiche le formulaire pour initier un duel contre un spécific utilisateur.
+     * 
+     * @param User $user Cible du duel.
+     * @return \Illuminate\View\View
      */
     public function create(User $user)
     {
@@ -21,7 +28,10 @@ class DuelController extends Controller
     }
 
     /**
-     * Store the initial duel request (Challenger launches the attack).
+     * Enregistre une nouvelle requête de duel (Le challenger lance l'attaque).
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -43,11 +53,13 @@ class DuelController extends Controller
     }
 
     /**
-     * Duel Arena: The place where both play.
+     * Affiche l'arène de duel pour la tentative actuelle.
+     * 
+     * @param Duel $duel
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function play(Duel $duel)
     {
-        // If expired
         if ($duel->expires_at->isPast() && $duel->status !== 'completed') {
             $duel->update(['status' => 'expired']);
             return redirect()->route('leaderboard')->with('error', 'Ce défi a expiré.');
@@ -55,7 +67,6 @@ class DuelController extends Controller
 
         $quiz = $duel->quiz;
         
-        // Determine role
         if (Auth::id() === $duel->challenger_id && $duel->challenger_score === null) {
             return view('duels.play', compact('duel', 'quiz'));
         }
@@ -69,7 +80,11 @@ class DuelController extends Controller
     }
 
     /**
-     * Submit results for a duel attempt.
+     * Soumet le résultat d'une tentative de duel (score et temps).
+     * 
+     * @param Request $request
+     * @param Duel $duel
+     * @return \Illuminate\Http\JsonResponse
      */
     public function submit(Request $request, Duel $duel)
     {
@@ -95,7 +110,10 @@ class DuelController extends Controller
     }
 
     /**
-     * Resolve the winner after both have played.
+     * Résout le gagnant du duel après que les deux parties aient joué.
+     * 
+     * @param Duel $duel
+     * @return void
      */
     private function resolveWinner(Duel $duel)
     {
@@ -106,7 +124,7 @@ class DuelController extends Controller
         } elseif ($duel->defender_score > $duel->challenger_score) {
             $winnerId = $duel->defender_id;
         } else {
-            // Equal scores, compare time
+            // Égalité de score : on compare le temps de complétion (le plus rapide gagne)
             if ($duel->challenger_time_ms < $duel->defender_time_ms) {
                 $winnerId = $duel->challenger_id;
             } else {
@@ -116,45 +134,55 @@ class DuelController extends Controller
 
         $duel->update(['winner_id' => $winnerId]);
 
-        // Reward logic
         if ($winnerId) {
             $winner = User::find($winnerId);
-            $winner->increment('global_score', 150); // Winner bonus
+            $winner->increment('global_score', 150);
             
             $loserId = ($winnerId == $duel->challenger_id) ? $duel->defender_id : $duel->challenger_id;
             $loser = User::find($loserId);
-            $loser->decrement('global_score', min($loser->global_score, 50)); // Loser penalty
+            $loser->decrement('global_score', min($loser->global_score, 50));
 
-            // Check for Duel Badges
             $this->checkDuelBadges($winner, $duel);
         }
     }
 
+    /**
+     * Vérifie et débloque les badges liés aux duels.
+     * 
+     * @param User $user
+     * @param Duel $duel
+     * @return void
+     */
     private function checkDuelBadges(User $user, Duel $duel)
     {
-        $unlocked = [];
         $winCount = $user->wonDuels()->count();
 
         // 1st Win: Gladiateur du Réseau
         if ($winCount >= 1) {
-            $badge = \App\Models\Badge::where('name', 'Gladiateur du Réseau')->first();
+            $badge = Badge::where('name', 'Gladiateur du Réseau')->first();
             if ($badge) $user->badges()->syncWithoutDetaching([$badge->id]);
         }
 
         // 5 Wins: Légende de l'Arène
         if ($winCount >= 5) {
-            $badge = \App\Models\Badge::where('name', 'Légende de l\'Arène')->first();
+            $badge = Badge::where('name', 'Légende de l\'Arène')->first();
             if ($badge) $user->badges()->syncWithoutDetaching([$badge->id]);
         }
 
-        // Fast Win: Ghost Runner (under 30s)
+        // Fast Win: Ghost Runner (moins de 30s)
         $timeMs = ($user->id === $duel->challenger_id) ? $duel->challenger_time_ms : $duel->defender_time_ms;
         if ($timeMs < 30000) {
-            $badge = \App\Models\Badge::where('name', 'Ghost Runner')->first();
+            $badge = Badge::where('name', 'Ghost Runner')->first();
             if ($badge) $user->badges()->syncWithoutDetaching([$badge->id]);
         }
     }
 
+    /**
+     * Affiche le résultat d'un duel.
+     * 
+     * @param Duel $duel
+     * @return \Illuminate\View\View
+     */
     public function result(Duel $duel)
     {
         return view('duels.result', compact('duel'));

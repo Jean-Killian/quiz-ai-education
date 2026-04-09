@@ -4,8 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
+/**
+ * Modèle représentant un défi asynchrone entre deux opérateurs.
+ * 
+ * @property string $id UUID unique du duel
+ * @property string $status État du duel (pending, open, completed, expired)
+ */
 class Duel extends Model
 {
     use HasFactory;
@@ -30,6 +37,9 @@ class Duel extends Model
         'expires_at' => 'datetime',
     ];
 
+    /**
+     * Initialisation du modèle : génération de l'UUID.
+     */
     protected static function boot()
     {
         parent::boot();
@@ -40,22 +50,42 @@ class Duel extends Model
         });
     }
 
-    public function challenger()
+    /**
+     * L'initiateur du défi.
+     * 
+     * @return BelongsTo
+     */
+    public function challenger(): BelongsTo
     {
         return $this->belongsTo(User::class, 'challenger_id');
     }
 
-    public function defender()
+    /**
+     * Le défenseur recevant le défi.
+     * 
+     * @return BelongsTo
+     */
+    public function defender(): BelongsTo
     {
         return $this->belongsTo(User::class, 'defender_id');
     }
 
-    public function quiz()
+    /**
+     * Le quiz servant de support au duel.
+     * 
+     * @return BelongsTo
+     */
+    public function quiz(): BelongsTo
     {
         return $this->belongsTo(Quiz::class);
     }
 
-    public function winner()
+    /**
+     * Le vainqueur final après résolution.
+     * 
+     * @return BelongsTo
+     */
+    public function winner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'winner_id');
     }

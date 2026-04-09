@@ -5,45 +5,57 @@ use App\Http\Controllers\QuizController;
 use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\DuelController;
 use App\Http\Controllers\MissionController;
+use App\Http\Controllers\LeaderboardController;
+use App\Http\Controllers\IAQuizGeneratorController;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * 🛰️ ROUTES DU RÉSEAU BUG_HUNTER
+ */
+
+// Landing Page
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+// Routes sécurisées (Authentification requise)
 Route::middleware('auth')->group(function () {
+    
+    // GESTION DU PROFIL
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Dashboard redirection to quizzes
+    // Dashboard redirection vers les missions
     Route::get('/dashboard', function() {
         return redirect()->route('quizzes.index');
     })->name('dashboard');
 
-    // Quiz routes
+    // SYSTÈME DE MISSIONS (QUIZ)
     Route::get('/quizzes', [QuizController::class, 'index'])->name('quizzes.index');
-    Route::get('/quizzes/generate', [\App\Http\Controllers\IAQuizGeneratorController::class, 'showForm'])->name('quizzes.generate');
-    Route::post('/quizzes/generate', [\App\Http\Controllers\IAQuizGeneratorController::class, 'generate'])->name('quizzes.generate.post');
+    Route::get('/quizzes/generate', [IAQuizGeneratorController::class, 'showForm'])->name('quizzes.generate');
+    Route::post('/quizzes/generate', [IAQuizGeneratorController::class, 'generate'])->name('quizzes.generate.post');
     Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
     Route::post('/quizzes/{quiz}/submit', [QuizController::class, 'submit'])->name('quizzes.submit');
     Route::get('/quizzes/{quiz}/result', [QuizController::class, 'result'])->name('quizzes.result');
 
-    // Leaderboard
-    Route::get('/leaderboard', [\App\Http\Controllers\LeaderboardController::class, 'index'])->name('leaderboard');
+    // CLASSEMENT (LEADERBOARD)
+    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard');
 
-    // Mission Logs
-    Route::get('/logs', [\App\Http\Controllers\MissionController::class, 'index'])->name('logs');
+    // HISTORIQUE DES MISSIONS (LOGS)
+    Route::get('/logs', [MissionController::class, 'index'])->name('logs');
 
-    // Achievements
-    Route::get('/achievements', [\App\Http\Controllers\AchievementController::class, 'index'])->name('achievements');
+    // SUCCÈS & RÉCOMPENSES (ACHIEVEMENTS)
+    Route::get('/achievements', [AchievementController::class, 'index'])->name('achievements');
 
-    // Duels
-    Route::get('/duels/create/{user}', [DuelController::class, 'create'])->name('duels.create');
-    Route::post('/duels/store', [DuelController::class, 'store'])->name('duels.store');
-    Route::get('/duels/{duel}/play', [DuelController::class, 'play'])->name('duels.play');
-    Route::post('/duels/{duel}/submit', [DuelController::class, 'submit'])->name('duels.submit');
-    Route::get('/duels/{duel}/result', [DuelController::class, 'result'])->name('duels.result');
+    // SYSTÈME DE DUELS ASYNCHRONES
+    Route::group(['prefix' => 'duels', 'as' => 'duels.'], function() {
+        Route::get('/create/{user}', [DuelController::class, 'create'])->name('create');
+        Route::post('/store', [DuelController::class, 'store'])->name('store');
+        Route::get('/{duel}/play', [DuelController::class, 'play'])->name('play');
+        Route::post('/{duel}/submit', [DuelController::class, 'submit'])->name('submit');
+        Route::get('/{duel}/result', [DuelController::class, 'result'])->name('result');
+    });
 });
 
 require __DIR__.'/auth.php';
