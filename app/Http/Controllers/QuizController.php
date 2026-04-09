@@ -49,8 +49,8 @@ class QuizController extends Controller
             $quiz->id => ['score' => $score]
         ], false);
 
-        // Rediriger vers la page de résultat
-        return redirect()->route('quizzes.result', $quiz->id);
+        // On passe les réponses de l'utilisateur à la session pour afficher la correction au prochain écran
+        return redirect()->route('quizzes.result', $quiz->id)->with('user_answers', $submittedAnswers);
     }
 
     // Afficher le résultat du quiz passé
@@ -65,6 +65,9 @@ class QuizController extends Controller
 
         $score = $userQuiz->pivot->score;
         $totalQuestions = $quiz->questions()->count();
+
+        // Charger les questions et réponses pour afficher la correction détaillée si elle existe en session
+        $quiz->load('questions.answers');
 
         return view('quizzes.result', compact('quiz', 'score', 'totalQuestions'));
     }
