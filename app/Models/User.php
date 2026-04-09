@@ -11,7 +11,13 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = ['name', 'email', 'password', 'global_score'];
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'global_score',
+        'profile_photo',
+    ];
 
     protected $hidden = [
         'password',
@@ -24,6 +30,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        return $this->profile_photo 
+            ? asset('storage/' . $this->profile_photo) 
+            : 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=22c55e&background=0f172a';
     }
 
     // A user can have many quizzes (scores)
