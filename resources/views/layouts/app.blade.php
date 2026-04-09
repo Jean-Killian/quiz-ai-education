@@ -48,6 +48,7 @@
                             <a href="{{ route('quizzes.index') }}" class="text-[10px] uppercase tracking-widest font-bold {{ request()->routeIs('quizzes.index') ? 'text-green-500' : 'text-slate-500 hover:text-slate-300' }}">Archives_Cibles</a>
                             <a href="{{ route('quizzes.generate') }}" class="text-[10px] uppercase tracking-widest font-bold {{ request()->routeIs('quizzes.generate') ? 'text-green-500' : 'text-slate-500 hover:text-slate-300' }}">Initialiser_Traque</a>
                             <a href="{{ route('leaderboard') }}" class="text-[10px] uppercase tracking-widest font-bold {{ request()->routeIs('leaderboard') ? 'text-green-500' : 'text-slate-500 hover:text-slate-300' }}">Classement_Elite</a>
+                            <a href="{{ route('profile.edit') }}" class="text-[10px] uppercase tracking-widest font-bold {{ request()->routeIs('profile.edit') ? 'text-green-500' : 'text-slate-500 hover:text-slate-300' }}">Profil_Opérateur</a>
                         </div>
 
                         <!-- Mute Toggle -->
