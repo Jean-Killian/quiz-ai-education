@@ -14,7 +14,7 @@
                     <!-- Photo Section -->
                     <div class="relative group">
                         <div class="size-32 rounded border-4 border-green-500/50 overflow-hidden shadow-[0_0_15px_rgba(34,197,94,0.3)] bg-slate-900 flex items-center justify-center">
-                            <img src="{{ auth()->user()->avatar_url }}" alt="Profile" class="w-full h-full object-cover">
+                            <img id="avatar_preview" src="{{ auth()->user()->avatar_url }}" alt="Profile" class="w-full h-full object-cover">
                         </div>
                         <div class="absolute -bottom-2 -right-2 bg-green-500 text-black text-[10px] font-black px-2 py-1 rounded-sm uppercase tracking-tighter">
                             Active
@@ -74,7 +74,7 @@
 
                         <div>
                             <label for="profile_photo" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">> Update_Avatar (IMG)</label>
-                            <input id="profile_photo" name="profile_photo" type="file"
+                            <input id="profile_photo_input" name="profile_photo" type="file" onchange="previewImage(event)"
                                    class="block w-full bg-slate-900 border-slate-700 rounded text-slate-400 file:bg-slate-800 file:text-green-500 file:border-0 file:py-1 file:px-3 file:mr-4 file:text-xs file:uppercase file:font-black focus:border-green-500 border transition-colors font-mono text-[10px] py-1">
                             <x-forms.input-error class="mt-2" :messages="$errors->get('profile_photo')" />
                         </div>
@@ -148,4 +148,15 @@
 
         </div>
     </div>
+
+    <script>
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function(){
+                const output = document.getElementById('avatar_preview');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
 </x-app-layout>
