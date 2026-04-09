@@ -35,8 +35,17 @@ Le projet repose sur un socle technologique moderne choisi pour sa rapidité d'e
 ---
 
 ## 🏗️ 3. Architecture des Données
-Le projet utilise une architecture relationnelle simple mais extensible :
-- **Quizzes** (Missions)
-- **Questions** (Snippets buggés)
-- **Answers** (Patches correctifs)
-- **User_Quiz** (Pivot pour le tracking des scores)
+Le projet utilise une architecture relationnelle optimisée pour la performance :
+- **Users** : Stocke les profils d'opérateurs et la `global_score` (XP cumulée).
+- **Quizzes** : Missions de traque avec un niveau de `difficulty`.
+- **Questions** : Snippets de code buggés incluant un champ `explanation` pour le débriefing pédagogique.
+- **Answers** : Patches correctifs proposés.
+- **Quiz_User** (Pivot) : Historique des sessions et scores individuels par mission.
+
+---
+
+## 🎮 4. Gamification & Progression
+Pour transformer l'apprentissage en expérience immersive, BugHunter AI intègre :
+1. **Système d'EXP** : Gain de points basé sur le nombre de bugs trouvés et la difficulté de la mission.
+2. **Leaderboard Élite** : Un classement en temps réel des meilleurs opérateurs du réseau.
+3. **Analyse Post-Mortem** : Un débriefing technique après chaque mission pour comprendre ses erreurs.

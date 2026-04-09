@@ -69,6 +69,18 @@ Chaque décision suit la structure de référence MADR (Markdown Architecture De
 - **Choix Retenu :** Passage sur l'API **Groq Cloud** avec le modèle **Llama-3.3-70b-versatile**.
 - **Conséquences :** Vitesse de génération divisée par 10 (~1s vs 15s). Dépendance à une nouvelle clé d'API.
 
+### [ADR-007] Pédagogie : Rapports d'Analyse Post-Mortem
+- **Date :** 9 Avril 2026
+- **Contexte :** Identifier un bug est bien, comprendre *pourquoi* c'est un bug est mieux pour l'apprentissage.
+- **Choix Retenu :** Intégration d'un champ `explanation` généré par l'IA pour chaque question.
+- **Conséquences :** Amélioration de la valeur éducative. Légère augmentation du coût de génération IA (plus de tokens).
+
+### [ADR-008] Engagement : Système de Réputation (XP) et Leaderboard
+- **Date :** 9 Avril 2026
+- **Contexte :** Nécessité de fidéliser l'utilisateur et de créer un sentiment de progression.
+- **Choix Retenu :** Mise en place d'un score global persistant et d'un classement "Elite".
+- **Conséquences :** Ajout de colonnes en base de données et d'une logique de calcul de points par difficulté. Charge serveur accrue pour le calcul des classements (limité au Top 50 pour performance).
+
 ---
 
 > [!IMPORTANT]

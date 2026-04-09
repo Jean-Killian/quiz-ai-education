@@ -61,6 +61,16 @@ Le formulaire de création doit ressembler à une injection de payload. On ne ch
 - Le code buggé est la star. Il doit être affiché dans une console noire avec une coloration syntaxique parfaite (`Highlight.js`).
 - Les réponses ne sont pas des questions de cours mais des **Patches de Sécurité**.
 
+### D. Analyse Post-Mortem (Expert Analysis)
+- Une section "Terminal de débriefing" apparaît après chaque mission.
+- Fond `slate-950` avec une bordure `blue-500/30`.
+- Texte explicatif généré par l'IA formaté en Markdown (`Marked.js`).
+
+### E. Le Hall of Fame (Leaderboard)
+- Tableau style "Command Center".
+- Rangs mis en évidence avec des trophées (Top 3) et des badges de grade (Elite Hunter, Active Agent).
+- Ligne d'opérateur courant surlignée en vert néon.
+
 ---
 
 > [!IMPORTANT]

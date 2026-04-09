@@ -47,6 +47,7 @@
                         <div class="hidden lg:flex space-x-6 mr-4 border-r border-slate-800 pr-6">
                             <a href="<?php echo e(route('quizzes.index')); ?>" class="text-[10px] uppercase tracking-widest font-bold <?php echo e(request()->routeIs('quizzes.index') ? 'text-green-500' : 'text-slate-500 hover:text-slate-300'); ?>">Archives_Cibles</a>
                             <a href="<?php echo e(route('quizzes.generate')); ?>" class="text-[10px] uppercase tracking-widest font-bold <?php echo e(request()->routeIs('quizzes.generate') ? 'text-green-500' : 'text-slate-500 hover:text-slate-300'); ?>">Initialiser_Traque</a>
+                            <a href="<?php echo e(route('leaderboard')); ?>" class="text-[10px] uppercase tracking-widest font-bold <?php echo e(request()->routeIs('leaderboard') ? 'text-green-500' : 'text-slate-500 hover:text-slate-300'); ?>">Classement_Elite</a>
                         </div>
 
                         <!-- Global Score -->
