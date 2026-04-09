@@ -42,7 +42,19 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center space-x-6">
+                    <div class="flex items-center space-x-8">
+                        <!-- Navigation Links -->
+                        <div class="hidden lg:flex space-x-6 mr-4 border-r border-slate-800 pr-6">
+                            <a href="<?php echo e(route('quizzes.index')); ?>" class="text-[10px] uppercase tracking-widest font-bold <?php echo e(request()->routeIs('quizzes.index') ? 'text-green-500' : 'text-slate-500 hover:text-slate-300'); ?>">Archives_Cibles</a>
+                            <a href="<?php echo e(route('quizzes.generate')); ?>" class="text-[10px] uppercase tracking-widest font-bold <?php echo e(request()->routeIs('quizzes.generate') ? 'text-green-500' : 'text-slate-500 hover:text-slate-300'); ?>">Initialiser_Traque</a>
+                        </div>
+
+                        <!-- Global Score -->
+                        <div class="flex items-center gap-3 bg-green-950/30 border border-green-500/50 px-3 py-1.5 rounded shadow-[0_0_15px_rgba(34,197,94,0.1)]">
+                            <span class="text-green-600 text-[9px] font-black uppercase tracking-tighter">Reputation</span>
+                            <span class="text-green-400 text-sm font-black"><?php echo e(auth()->user()->global_score ?? 0); ?> XP</span>
+                        </div>
+
                         <div class="hidden md:flex flex-col items-end">
                             <span class="text-green-500 text-[10px] leading-none uppercase tracking-widest font-bold">Session active</span>
                             <span class="text-slate-400 text-xs"><?php echo e(auth()->user()->name ?? 'Opérateur'); ?></span>
