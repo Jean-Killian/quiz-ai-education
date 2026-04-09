@@ -28,7 +28,7 @@ class QuizTest extends TestCase
     }
 
     /**
-     * Teste la soumission d'un quiz et le calcul du score (BugHunter Strategy).
+     * Teste que le score est correctement calculé même si certaines réponses sont manquantes.
      */
     public function test_user_can_submit_quiz_and_get_score()
     {
@@ -45,12 +45,21 @@ class QuizTest extends TestCase
         $response = $this->actingAs($user)->post(route('quizzes.submit', $quiz->id), [
             'answers' => [
                 $q1->id => $correct1->id,
-                $q2->id => 999,
+                $q2->id => 999, // Faux ID
             ]
         ]);
 
         $response->assertRedirect(route('quizzes.result', $quiz->id));
         
         $this->assertEquals(1, $user->quizzes()->where('quiz_id', $quiz->id)->first()->pivot->score);
+    }
+
+    /**
+     * Teste qu'un utilisateur non authentifié est redirigé (Cas d'échec/Sécurité).
+     */
+    public function test_unauthenticated_user_cannot_access_quizzes()
+    {
+        $response = $this->get(route('quizzes.index'));
+        $response->assertRedirect('/login');
     }
 }

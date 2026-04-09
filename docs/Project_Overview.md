@@ -69,3 +69,18 @@ Une suite de tests a été mise en place pour sécuriser le cœur fonctionnel :
 
 ### **Analyse Statique (SonarCloud)**
 Le projet est surveillé par SonarCloud pour détecter les "Code Smells", les vulnérabilités et garantir un Quality Gate respecté avant chaque mise en production.
+
+---
+
+## ⚙️ 6. Industrialisation (CI/CD)
+
+Le projet utilise **GitHub Actions** pour automatiser la chaîne de qualité. Tout code poussé est soumis au pipeline défini dans `.github/workflows/main.yml` :
+
+1.  **Environnement** : Installe PHP 8.2, les extensions nécessaires et les dépendances (Composer).
+2.  **Assets** : Compile les styles Tailwind et les scripts via NPM.
+3.  **Qualité Fonctionnelle** : Exécute l'intégralité de la suite de tests PHPUnit (Unit & Feature).
+4.  **Qualité Structurelle** : Lance un scan SonarCloud automatique.
+
+> [!IMPORTANT]
+> **Blocage de sécurité** : Si les tests échouent ou si le Quality Gate Sonar n'est pas rempli, la fusion (Merge) vers la branche principale est bloquée tant que le code n'est pas corrigé.
+
