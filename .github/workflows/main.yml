@@ -20,9 +20,6 @@ jobs:
         extensions: mbstring, xml, ctype, iconv, intl, sqlite, pdo_sqlite
         coverage: none
 
-    - name: Directory Permissions
-      run: chmod -R 777 storage bootstrap/cache
-
     - name: Install Dependencies
       run: composer install --no-ansi --no-interaction --no-progress --prefer-dist
 
@@ -30,11 +27,13 @@ jobs:
       run: |
         cp .env.exemple .env
         php artisan key:generate
-        touch database/database.sqlite
         php artisan config:clear
 
     - name: Execute Tests
-      run: vendor/bin/phpunit
+      run: php artisan test --env=testing
+      env:
+        DB_CONNECTION: sqlite
+        DB_DATABASE: ":memory:"
 
   sonarcloud:
     name: SonarCloud Scan
