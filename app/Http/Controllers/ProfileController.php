@@ -43,6 +43,10 @@ class ProfileController extends Controller
             $user->email_verified_at = null;
         }
 
+        if ($request->has('theme')) {
+            $user->theme = $request->theme;
+        }
+
         $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');

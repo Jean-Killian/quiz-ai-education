@@ -17,6 +17,9 @@ class User extends Authenticatable
         'password',
         'global_score',
         'profile_photo',
+        'current_streak',
+        'max_streak',
+        'theme',
     ];
 
     protected $hidden = [
@@ -42,8 +45,28 @@ class User extends Authenticatable
     // A user can have many quizzes (scores)
     public function quizzes()
     {
-        return $this->belongsToMany(Quiz::class, 'quiz_user')
-                    ->withPivot('score')
+        return $this->belongsToMany(Quiz::class)
+                    ->withPivot('score', 'time_ms')
                     ->withTimestamps();
+    }
+
+    public function sentDuels()
+    {
+        return $this->hasMany(Duel::class, 'challenger_id');
+    }
+
+    public function receivedDuels()
+    {
+        return $this->hasMany(Duel::class, 'defender_id');
+    }
+
+    public function wonDuels()
+    {
+        return $this->hasMany(Duel::class, 'winner_id');
+    }
+
+    public function badges()
+    {
+        return $this->belongsToMany(Badge::class, 'user_badge')->withTimestamps();
     }
 }

@@ -26,6 +26,7 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
             'profile_photo' => ['nullable', 'image', 'mimes:jpg,png,jpeg,gif', 'max:2048'],
+            'theme' => ['required', 'string', Rule::in(['matrix', 'cyberpunk', 'dark_web', 'bios'])],
         ];
     }
 }
