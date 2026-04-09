@@ -32,11 +32,24 @@ Le projet repose sur un socle technologique moderne choisi pour sa rapidité d'e
 - **Marked.js** :
   - *Pourquoi ?* Pour parser fluidement le Markdown renvoyé par l'IA dans l'interface de jeu.
 
+- **User_Quiz** (Pivot pour le tracking des scores)
+
 ---
 
-## 🏗️ 3. Architecture des Données
-Le projet utilise une architecture relationnelle simple mais extensible :
-- **Quizzes** (Missions)
-- **Questions** (Snippets buggés)
-- **Answers** (Patches correctifs)
-- **User_Quiz** (Pivot pour le tracking des scores)
+## 🛡️ 4. Assurance Qualité & Gouvernance IA
+
+Pour garantir la pérennité du projet et la fiabilité des contenus générés :
+
+### **Règles d'Agents (Agent Rules)**
+Le projet intègre une couche de gouvernance automatisée via `.agents/rules/` :
+- **quality_security.md** : Interdiction stricte de secrets en dur, validation systématique des entrées utilisateur.
+- **documentation.md** : Standardisation des commentaires PHP (PHPDoc obligatoire) pour une maintenance facilitée.
+
+### **Tests Automatisés (PHPUnit)**
+Une suite de tests a été mise en place pour sécuriser le cœur fonctionnel :
+- **Feature Tests** : Validation des parcours de soumission de quiz et du calcul de score.
+- **Unit Tests** : Tests isolés de la logique de parsing JSON/Markdown des réponses de l'IA.
+
+### **Analyse Statique (SonarCloud)**
+Le projet est surveillé par SonarCloud pour détecter les "Code Smells", les vulnérabilités et garantir un Quality Gate respecté avant chaque mise en production.
+
