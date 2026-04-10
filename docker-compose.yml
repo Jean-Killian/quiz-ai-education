@@ -22,6 +22,7 @@ services:
         required: false
     environment:
       # --- Variables de configuration explicites ---
+      - APP_KEY=base64:v20YeYbRH12lDSOcZFVIbUEQELn1iXHvRvctv9D/Iyc=
       - APP_ENV=local
       - APP_DEBUG=true
       - APP_URL=http://localhost:8080

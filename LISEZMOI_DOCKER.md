@@ -39,12 +39,13 @@ Une fois la commande exécutée, patientez quelques dizaines de secondes lors du
 Ensuite, l'application est accessible sur :
 👉 **http://localhost:8080**
 
-### Initialisation de la BDD (Optionnel au premier run)
+### Initialisation de la BDD (Premier lancement)
 
-Puisque la base de données vient d'être créée via Docker, il faut peut-être y instancier les tables :
+La base de données est vide à la création. Lancez les migrations pour créer toutes les tables :
 ```bash
-docker-compose exec app php artisan migrate --seed
+docker compose exec app php artisan migrate:fresh --force
 ```
+*`migrate:fresh` supprime toutes les tables existantes et les recrée proprement. Idéal pour un premier lancement ou une remise à zéro.*
 
 ---
 
